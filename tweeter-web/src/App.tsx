@@ -14,7 +14,7 @@ import MainLayout from "./components/mainLayout/MainLayout";
 import Toaster from "./components/toaster/Toaster";
 import FeedScroller from "./components/mainLayout/FeedScroller";
 import StoryScroller from "./components/mainLayout/StoryScroller";
-import { AuthToken, User, FakeData } from "tweeter-shared";
+import { AuthToken, User, FakeData } from "../../tweeter-shared";
 import UserItemScroller from "./components/mainLayout/UserItemScroller";
 
 const App = () => {
