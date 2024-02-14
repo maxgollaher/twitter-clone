@@ -2,7 +2,7 @@ import { UserService } from "../../model/service/UserService";
 import { AuthToken, User } from "tweeter-shared";
 
 export interface LoginView {
-    updateUserInfo: (user: User, displayedUser: User, authToken: AuthToken, rememberMe: boolean) => void;
+    updateUserInfo: (user: User, displayedUser: User, authToken: AuthToken) => void;
     displayErrorMessage: (message: string) => void;
     navigate: (url: string) => void;
     originalUrl?: string;
@@ -23,7 +23,7 @@ export class LoginPresenter {
         try {
             let [user, authToken] = await this.service.login(alias, password);
 
-            this.view.updateUserInfo(user, user, authToken, this.view.rememberMeRef.current);
+            this.view.updateUserInfo(user, user, authToken);
 
             if (!!this.view.originalUrl) {
                 this.view.navigate(this.view.originalUrl);

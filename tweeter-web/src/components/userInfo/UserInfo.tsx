@@ -42,7 +42,6 @@ const UserInfo = (props: Props) => {
 
   const [presenter] = useState(props.presenterGenerator(listener));
 
-
   const setIsFollowerStatus = async (
     authToken: AuthToken,
     currentUser: User,

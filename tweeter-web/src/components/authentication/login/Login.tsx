@@ -10,6 +10,7 @@ import {
   LoginPresenter,
   LoginView,
 } from "../../../presenter/authentication/LoginPresenter";
+import { User, AuthToken } from "tweeter-shared";
 
 interface Props {
   presenterGenerator: (view: LoginView) => LoginPresenter;
@@ -29,8 +30,16 @@ const Login = (props: Props) => {
   const rememberMeRef = useRef(rememberMe);
   rememberMeRef.current = rememberMe;
 
+  const presenterUpdateUserInfo = (
+    user: User,
+    displayedUser: User,
+    authToken: AuthToken
+  ) => {
+    updateUserInfo(user, displayedUser, authToken, rememberMe);
+  };
+
   const listener = {
-    updateUserInfo: updateUserInfo,
+    updateUserInfo: presenterUpdateUserInfo,
     displayErrorMessage: displayErrorMessage,
     navigate: navigate,
     originalUrl: props.originalUrl,
