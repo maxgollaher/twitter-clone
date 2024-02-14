@@ -6,7 +6,6 @@ export interface LoginView {
     displayErrorMessage: (message: string) => void;
     navigate: (url: string) => void;
     originalUrl?: string;
-    rememberMeRef: React.MutableRefObject<boolean>;
 }
 
 export class LoginPresenter {

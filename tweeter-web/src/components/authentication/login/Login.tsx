@@ -43,7 +43,6 @@ const Login = (props: Props) => {
     displayErrorMessage: displayErrorMessage,
     navigate: navigate,
     originalUrl: props.originalUrl,
-    rememberMeRef: rememberMeRef,
   };
 
   const [presenter] = useState(props.presenterGenerator(listener));

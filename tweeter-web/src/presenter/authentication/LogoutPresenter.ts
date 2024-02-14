@@ -1,5 +1,5 @@
 import { AuthToken } from "tweeter-shared";
-import { UserService } from "../model/service/UserService";
+import { UserService } from "../../model/service/UserService";
 
 export interface LogoutView {
     authToken: AuthToken | null;
