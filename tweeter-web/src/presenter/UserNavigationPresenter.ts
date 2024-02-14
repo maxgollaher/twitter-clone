@@ -36,7 +36,7 @@ export class UserNavigationPresenter {
         }
     };
 
-    public extractAlias(value: string): string {
+    private extractAlias(value: string): string {
         let index = value.indexOf("@");
         return value.substring(index);
     };

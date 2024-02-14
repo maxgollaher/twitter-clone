@@ -34,6 +34,7 @@ const UserInfo = (props: Props) => {
     setIsFollower: setIsFollower,
     setFolloweesCount: setFolloweesCount,
     setFollowersCount: setFollowersCount,
+    setDisplayedUser: setDisplayedUser,
     displayInfoMessage: displayInfoMessage,
     displayErrorMessage: displayErrorMessage,
     clearLastInfoMessage: clearLastInfoMessage,
@@ -66,7 +67,7 @@ const UserInfo = (props: Props) => {
 
   const switchToLoggedInUser = (event: React.MouseEvent): void => {
     event.preventDefault();
-    setDisplayedUser(currentUser!);
+    presenter.switchToLoggedInUser(currentUser!);
   };
 
   const followDisplayedUser = async (
@@ -77,26 +78,12 @@ const UserInfo = (props: Props) => {
     presenter.followDisplayedUser(authToken!, displayedUser!);
   };
 
-  const follow = async (
-    authToken: AuthToken,
-    userToFollow: User
-  ): Promise<[followersCount: number, followeesCount: number]> => {
-    return presenter.follow(authToken, userToFollow);
-  };
-
   const unfollowDisplayedUser = async (
     event: React.MouseEvent
   ): Promise<void> => {
     event.preventDefault();
 
     presenter.unfollowDisplayedUser(authToken!, displayedUser!);
-  };
-
-  const unfollow = async (
-    authToken: AuthToken,
-    userToUnfollow: User
-  ): Promise<[followersCount: number, followeesCount: number]> => {
-    return presenter.unfollow(authToken, userToUnfollow);
   };
 
   return (
