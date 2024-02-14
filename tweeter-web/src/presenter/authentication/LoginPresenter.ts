@@ -1,13 +1,12 @@
-import { useNavigate } from "react-router-dom";
 import { UserService } from "../../model/service/UserService";
 import { AuthToken, User } from "tweeter-shared";
-
-const navigate = useNavigate();
 
 export interface LoginView {
     updateUserInfo: (user: User, displayedUser: User, authToken: AuthToken, rememberMe: boolean) => void;
     displayErrorMessage: (message: string) => void;
+    navigate: (url: string) => void;
     originalUrl?: string;
+    rememberMeRef: React.MutableRefObject<boolean>;
 }
 
 export class LoginPresenter {
@@ -20,16 +19,16 @@ export class LoginPresenter {
         this.service = new UserService();
     }
 
-    public async doLogin(alias: string, password: string, rememberMeRef: React.MutableRefObject<boolean>) {
+    public async doLogin(alias: string, password: string) {
         try {
             let [user, authToken] = await this.service.login(alias, password);
 
-            this.view.updateUserInfo(user, user, authToken, rememberMeRef.current);
+            this.view.updateUserInfo(user, user, authToken, this.view.rememberMeRef.current);
 
             if (!!this.view.originalUrl) {
-                navigate(this.view.originalUrl);
+                this.view.navigate(this.view.originalUrl);
             } else {
-                navigate("/");
+                this.view.navigate("/");
             }
         } catch (error) {
             this.view.displayErrorMessage(
