@@ -28,7 +28,10 @@ const UserInfo = (props: Props) => {
     setIsFollowerStatus(authToken!, currentUser!, displayedUser!);
     setNumbFollowees(authToken!, displayedUser!);
     setNumbFollowers(authToken!, displayedUser!);
-  });
+  }, [currentUser, authToken, displayedUser]);
+  // TODO: originally was an empty array which caused a rerender, randomizing follower status
+  // Currently changed to only render when it changes, but remove later when the database is implemented
+
 
   const listener: UserInfoView = {
     setIsFollower: setIsFollower,

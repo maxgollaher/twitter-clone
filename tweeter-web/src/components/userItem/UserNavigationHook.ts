@@ -14,16 +14,14 @@ const useUserNavigation = (): UserNavigation => {
 
     const listener: UserNavigationView = {
         displayErrorMessage: displayErrorMessage,
-        setDisplayedUser: setDisplayedUser,
-        currentUser: currentUser,
-        authToken: authToken
+        setDisplayedUser: setDisplayedUser
     };
 
     const [presenter] = useState(new UserNavigationPresenter(listener));
 
     const navigateToUser = async (event: React.MouseEvent): Promise<void> => {
         event.preventDefault();
-        presenter.navigateToUser(event);
+        presenter.navigateToUser(event, currentUser!, authToken!);
     };
 
     return {
