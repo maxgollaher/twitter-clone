@@ -14,7 +14,6 @@ const AppNavbar = () => {
     useToastListener();
 
   const listener: LogoutView = {
-    authToken: authToken,
     clearLastInfoMessage: clearLastInfoMessage,
     clearUserInfo: clearUserInfo,
     displayErrorMessage: displayErrorMessage,

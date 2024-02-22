@@ -7,13 +7,11 @@ export interface RegisterView {
     updateUserInfo: (
         currentUser: User,
         displayedUser: User | null,
-        authToken: AuthToken,
-        remember: boolean
+        authToken: AuthToken
     ) => void;
     displayErrorMessage: (message: string) => void;
     navigate: (url: string) => void;
     setImageUrl: (url: string) => void;
-    rememberMeRef: React.MutableRefObject<boolean>;
 }
 
 export class RegisterPresenter {
@@ -70,7 +68,7 @@ export class RegisterPresenter {
                 this.imageBytes
             );
 
-            this.view.updateUserInfo(user, user, authToken, this.view.rememberMeRef.current);
+            this.view.updateUserInfo(user, user, authToken);
             this.view.navigate("/");
         } catch (error) {
             this.view.displayErrorMessage(

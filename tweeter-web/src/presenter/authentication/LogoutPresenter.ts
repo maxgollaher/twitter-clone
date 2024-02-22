@@ -2,7 +2,6 @@ import { AuthToken } from "tweeter-shared";
 import { UserService } from "../../model/service/UserService";
 
 export interface LogoutView {
-    authToken: AuthToken | null;
     clearLastInfoMessage: () => void;
     clearUserInfo: () => void;
     displayErrorMessage: (message: string) => void;

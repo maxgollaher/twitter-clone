@@ -10,6 +10,7 @@ import {
   RegisterPresenter,
   RegisterView,
 } from "../../../presenter/authentication/RegisterPresenter";
+import { User, AuthToken } from "tweeter-shared";
 
 interface Props {
   presenterGenerator: (view: RegisterView) => RegisterPresenter;
@@ -29,13 +30,21 @@ const Register = (props: Props) => {
   const navigate = useNavigate();
   const { updateUserInfo } = useUserInfo();
   const { displayErrorMessage } = useToastListener();
+  
+  
+  const presenterUpdateUserInfo = (
+    user: User,
+    displayedUser: User | null,
+    authToken: AuthToken
+  ) => {
+    updateUserInfo(user, displayedUser, authToken, rememberMe);
+  };
 
   const listener = {
-    updateUserInfo: updateUserInfo,
+    updateUserInfo: presenterUpdateUserInfo,
     displayErrorMessage: displayErrorMessage,
     navigate: navigate,
     setImageUrl: setImageUrl,
-    rememberMeRef: rememberMeRef,
   };
 
   const [presenter] = useState(props.presenterGenerator(listener));

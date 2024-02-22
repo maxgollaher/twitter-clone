@@ -32,7 +32,7 @@ const Login = (props: Props) => {
 
   const presenterUpdateUserInfo = (
     user: User,
-    displayedUser: User,
+    displayedUser: User | null,
     authToken: AuthToken
   ) => {
     updateUserInfo(user, displayedUser, authToken, rememberMe);
