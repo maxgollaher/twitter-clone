@@ -9,7 +9,7 @@ import useUserInfo from "../../userInfo/UserInfoHook";
 import {
   LoginPresenter,
   LoginView,
-} from "../../../presenter/authentication/LoginPresenter";
+} from "../../../presenter/LoginPresenter";
 import { User, AuthToken } from "tweeter-shared";
 
 interface Props {
@@ -42,7 +42,6 @@ const Login = (props: Props) => {
     updateUserInfo: presenterUpdateUserInfo,
     displayErrorMessage: displayErrorMessage,
     navigate: navigate,
-    originalUrl: props.originalUrl,
   };
 
   const [presenter] = useState(props.presenterGenerator(listener));
@@ -52,7 +51,7 @@ const Login = (props: Props) => {
   };
 
   const doLogin = async () => {
-    presenter.doLogin(alias, password);
+    presenter.doLogin(alias, password, props.originalUrl);
   };
 
   const inputFieldGenerator = () => {

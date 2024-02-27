@@ -1,41 +1,45 @@
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
+import { Presenter, View } from "./Presenter";
 
-export interface UserNavigationView {
-    displayErrorMessage: (message: string) => void;
-    setDisplayedUser: (user: User) => void;
+export interface UserNavigationView extends View {
+  setDisplayedUser: (user: User) => void;
 }
 
-export class UserNavigationPresenter {
+export class UserNavigationPresenter extends Presenter {
+  private service: UserService;
 
-    private view: UserNavigationView;
-    private service: UserService;
+  public constructor(view: UserNavigationView) {
+    super(view);
+    this.service = new UserService();
+  }
 
-    public constructor(view: UserNavigationView) {
-        this.view = view;
-        this.service = new UserService();
-    }
+  protected get view(): UserNavigationView {
+    return super.view as UserNavigationView;
+  }
 
-    public async navigateToUser(event: React.MouseEvent, currentUser: User, authToken: AuthToken): Promise<void> {
-        try {
-            let alias = this.extractAlias(event.target.toString());
+  public async navigateToUser(
+    event: React.MouseEvent,
+    currentUser: User,
+    authToken: AuthToken
+  ): Promise<void> {
+    this.doFailureReportingOperation(async () => {
+      let alias = this.extractAlias(event.target.toString());
 
-            let user = await this.service.getUser(authToken!, alias);
+      let user = await this.service.getUser(authToken!, alias);
 
-            if (!!user) {
-                if (currentUser!.equals(user)) {
-                    this.view.setDisplayedUser(currentUser!);
-                } else {
-                    this.view.setDisplayedUser(user);
-                }
-            }
-        } catch (error) {
-            this.view.displayErrorMessage(`Failed to get user because of exception: ${error}`);
+      if (!!user) {
+        if (currentUser!.equals(user)) {
+          this.view.setDisplayedUser(currentUser!);
+        } else {
+          this.view.setDisplayedUser(user);
         }
-    };
+      }
+    }, "get user");
+  }
 
-    private extractAlias(value: string): string {
-        let index = value.indexOf("@");
-        return value.substring(index);
-    };
+  private extractAlias(value: string): string {
+    let index = value.indexOf("@");
+    return value.substring(index);
+  }
 }

@@ -5,7 +5,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import Image from "react-bootstrap/Image";
 import useToastListener from "../toaster/ToastListenerHook";
 import { useState } from "react";
-import { LogoutPresenter, LogoutView } from "../../presenter/authentication/LogoutPresenter";
+import { LogoutPresenter, LogoutView } from "../../presenter/LogoutPresenter";
 
 const AppNavbar = () => {
   const location = useLocation();

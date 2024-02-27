@@ -9,7 +9,7 @@ import useUserInfo from "../../userInfo/UserInfoHook";
 import {
   RegisterPresenter,
   RegisterView,
-} from "../../../presenter/authentication/RegisterPresenter";
+} from "../../../presenter/RegisterPresenter";
 import { User, AuthToken } from "tweeter-shared";
 
 interface Props {
@@ -22,6 +22,7 @@ const Register = (props: Props) => {
   const [alias, setAlias] = useState("");
   const [password, setPassword] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [imageBytes, setImageBytes] = useState(new Uint8Array());
   const [rememberMe, setRememberMe] = useState(false);
 
   const rememberMeRef = useRef(rememberMe);
@@ -45,6 +46,7 @@ const Register = (props: Props) => {
     displayErrorMessage: displayErrorMessage,
     navigate: navigate,
     setImageUrl: setImageUrl,
+    setImageBytes: setImageBytes,
   };
 
   const [presenter] = useState(props.presenterGenerator(listener));
@@ -58,7 +60,7 @@ const Register = (props: Props) => {
   };
 
   const doRegister = async () => {
-    presenter.doRegister(firstName, lastName, alias, password);
+    presenter.doRegister(firstName, lastName, alias, password, imageBytes);
   };
 
   const inputFieldGenerator = () => {

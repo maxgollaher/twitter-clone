@@ -1,42 +1,42 @@
 import { AuthToken, Status, User } from "tweeter-shared";
 import { StatusService } from "../model/service/StatusService";
+import { MessageView, Presenter } from "./Presenter";
 
-export interface PostStatusView {
-    displayInfoMessage: (message: string, duration: number) => void;
-    displayErrorMessage: (message: string) => void;
-    clearLastInfoMessage: () => void;
-    setPost: (post: string) => void;
+export interface PostStatusView extends MessageView {
+  setPost: (post: string) => void;
 }
 
-export class PostStatusPresenter {
+export class PostStatusPresenter extends Presenter {
+  private service: StatusService;
 
-    private view: PostStatusView;
-    private service: StatusService;
+  constructor(view: PostStatusView) {
+    super(view);
+    this.service = new StatusService();
+  }
 
-    constructor(view: PostStatusView) {
-        this.view = view;
-        this.service = new StatusService();
-    }
+  protected get view(): PostStatusView {
+    return super.view as PostStatusView;
+  }
 
-    public clearPost(): void {
-        this.view.setPost("");
-    }
+  public clearPost(): void {
+    this.view.setPost("");
+  }
 
-    public async submitPost(authToken: AuthToken, post: string, currentUser: User): Promise<void> {
-        try {
-            this.view.displayInfoMessage("Posting status...", 0);
+  public async submitPost(
+    authToken: AuthToken,
+    post: string,
+    currentUser: User
+  ): Promise<void> {
+    this.doFailureReportingOperation(async () => {
+      this.view.displayInfoMessage("Posting status...", 0);
 
-            let status = new Status(post, currentUser!, Date.now());
+      let status = new Status(post, currentUser!, Date.now());
 
-            await this.service.postStatus(authToken!, status);
+      await this.service.postStatus(authToken!, status);
 
-            this.view.clearLastInfoMessage();
-            this.view.setPost("");
-            this.view.displayInfoMessage("Status posted!", 2000);
-        } catch (error) {
-            this.view.displayErrorMessage(
-                `Failed to post the status because of exception: ${error}`
-            );
-        }
-    };
+      this.view.clearLastInfoMessage();
+      this.view.setPost("");
+      this.view.displayInfoMessage("Status posted!", 2000);
+    }, "post the status");
+  }
 }
