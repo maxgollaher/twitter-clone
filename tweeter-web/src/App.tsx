@@ -11,12 +11,10 @@ import Register from "./components/authentication/register/Register";
 import MainLayout from "./components/mainLayout/MainLayout";
 import Toaster from "./components/toaster/Toaster";
 import useUserInfo from "./components/userInfo/UserInfoHook";
-import { UserItemView } from "./presenter/UserItemPresenter";
 import { FollowingPresenter } from "./presenter/FollowingPresenter";
 import { FollowersPresenter } from "./presenter/FollowersPresenter";
 import { FeedPresenter } from "./presenter/FeedPresenter";
 import { StoryPresenter } from "./presenter/StoryPresenter";
-import { StatusItemView } from "./presenter/StatusItemPresenter";
 import { LoginPresenter, LoginView } from "./presenter/LoginPresenter";
 import { RegisterPresenter, RegisterView } from "./presenter/RegisterPresenter";
 import ItemScroller from "./components/mainLayout/ItemScroller";
@@ -25,6 +23,7 @@ import { Status, User } from "tweeter-shared";
 import StatusItem from "./components/statusItem/StatusItem";
 import UserItem from "./components/userItem/UserItem";
 import { FollowService } from "./model/service/FollowService";
+import { PagedItemView } from "./presenter/PagedItemPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();
@@ -57,7 +56,7 @@ const AuthenticatedRoutes = () => {
           element={
             <ItemScroller<Status, StatusService>
               key={1}
-              presenterGenerator={(view: StatusItemView) =>
+              presenterGenerator={(view: PagedItemView<Status>) =>
                 new FeedPresenter(view)
               }
               renderItem={(status: Status) => <StatusItem item={status} />}
@@ -69,7 +68,7 @@ const AuthenticatedRoutes = () => {
           element={
             <ItemScroller<Status, StatusService>
               key={2}
-              presenterGenerator={(view: StatusItemView) =>
+              presenterGenerator={(view: PagedItemView<Status>) =>
                 new StoryPresenter(view)
               }
               renderItem={(status: Status) => <StatusItem item={status} />}
@@ -81,7 +80,7 @@ const AuthenticatedRoutes = () => {
           element={
             <ItemScroller<User, FollowService>
               key={3}
-              presenterGenerator={(view: UserItemView) =>
+              presenterGenerator={(view: PagedItemView<User>) =>
                 new FollowingPresenter(view)
               }
               renderItem={(item: User) => <UserItem item={item} />}
@@ -93,7 +92,7 @@ const AuthenticatedRoutes = () => {
           element={
             <ItemScroller<User, FollowService>
               key={4}
-              presenterGenerator={(view: UserItemView) =>
+              presenterGenerator={(view: PagedItemView<User>) =>
                 new FollowersPresenter(view)
               }
               renderItem={(item: User) => <UserItem item={item} />}
