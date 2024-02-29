@@ -34,17 +34,22 @@ export class RegisterPresenter extends Presenter {
     password: string,
     userImageBytes: Uint8Array
   ) {
-    this.doFailureReportingOperation(async () => {
-      let [user, authToken] = await this.service.register(
-        firstName,
-        lastName,
-        alias,
-        password,
-        userImageBytes
-      );
-      this.view.updateUserInfo(user, user, authToken);
-      this.view.navigate("/");
-    }, "register user");
+    this.doAuthenticationOperation(
+      async () => {
+        let [user, authToken] = await this.service.register(
+          firstName,
+          lastName,
+          alias,
+          password,
+          userImageBytes
+        );
+        this.view.updateUserInfo(user, user, authToken);
+      },
+      "register user",
+      () => {
+        this.view.navigate("/");
+      }
+    );
   }
 
   public handleFileChange(event: ChangeEvent<HTMLInputElement>) {
