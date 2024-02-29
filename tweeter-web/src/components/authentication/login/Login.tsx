@@ -7,13 +7,13 @@ import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../AuthenticationFields";
 import useUserInfo from "../../userInfo/UserInfoHook";
 import {
-  LoginPresenter,
-  LoginView,
+  LoginPresenter
 } from "../../../presenter/LoginPresenter";
 import { User, AuthToken } from "tweeter-shared";
+import { AuthenticatedView } from "../../../presenter/AuthenticatedPresenter";
 
 interface Props {
-  presenterGenerator: (view: LoginView) => LoginPresenter;
+  presenterGenerator: (view: AuthenticatedView) => LoginPresenter;
   originalUrl?: string;
 }
 

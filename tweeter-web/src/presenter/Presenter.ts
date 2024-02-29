@@ -30,13 +30,4 @@ export class Presenter {
       );
     }
   }
-
-  protected async doAuthenticationOperation(
-    operation: () => Promise<void>,
-    operationDescription: string,
-    navigation: () => void
-  ): Promise<void> {
-    this.doFailureReportingOperation(operation, operationDescription);
-    navigation();
-  }
 }

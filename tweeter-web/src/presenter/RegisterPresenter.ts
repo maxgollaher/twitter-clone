@@ -1,26 +1,21 @@
-import { User, AuthToken } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 import { Buffer } from "buffer";
 import { ChangeEvent } from "react";
-import { Presenter, View } from "./Presenter";
+import { AuthenticatedPresenter, AuthenticatedView } from "./AuthenticatedPresenter";
 
-export interface RegisterView extends View {
-  updateUserInfo: (
-    currentUser: User,
-    displayedUser: User | null,
-    authToken: AuthToken
-  ) => void;
-  navigate: (url: string) => void;
+export interface RegisterView extends AuthenticatedView {
   setImageUrl: (url: string) => void;
   setImageBytes: (bytes: Uint8Array) => void;
 }
 
-export class RegisterPresenter extends Presenter {
-  private service: UserService;
+export class RegisterPresenter extends AuthenticatedPresenter<UserService> {
 
   public constructor(view: RegisterView) {
     super(view);
-    this.service = new UserService();
+  }
+
+  protected createService(): UserService {
+    return new UserService();
   }
 
   protected get view(): RegisterView {

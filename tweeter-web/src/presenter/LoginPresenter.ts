@@ -1,26 +1,14 @@
 import { UserService } from "../model/service/UserService";
-import { AuthToken, User } from "tweeter-shared";
-import { Presenter, View } from "./Presenter";
+import { AuthenticatedPresenter, AuthenticatedView } from "./AuthenticatedPresenter";
 
-export interface LoginView extends View {
-  updateUserInfo: (
-    user: User,
-    displayedUser: User,
-    authToken: AuthToken
-  ) => void;
-  navigate: (url: string) => void;
-}
+export class LoginPresenter extends AuthenticatedPresenter<UserService> {
 
-export class LoginPresenter extends Presenter {
-  private service: UserService;
-
-  public constructor(view: LoginView) {
+  public constructor(view: AuthenticatedView) {
     super(view);
-    this.service = new UserService();
   }
 
-  protected get view(): LoginView {
-    return super.view as LoginView;
+  protected createService(): UserService {
+    return new UserService();
   }
 
   public async doLogin(alias: string, password: string, originalUrl?: string) {
