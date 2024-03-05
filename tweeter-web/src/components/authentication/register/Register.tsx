@@ -12,11 +12,7 @@ import {
 } from "../../../presenter/RegisterPresenter";
 import { User, AuthToken } from "tweeter-shared";
 
-interface Props {
-  presenterGenerator: (view: RegisterView) => RegisterPresenter;
-}
-
-const Register = (props: Props) => {
+const Register = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [alias, setAlias] = useState("");
@@ -49,7 +45,7 @@ const Register = (props: Props) => {
     setImageBytes: setImageBytes,
   };
 
-  const [presenter] = useState(props.presenterGenerator(listener));
+  const [presenter] = useState(new RegisterPresenter(listener));
 
   const checkSubmitButtonStatus = (): boolean => {
     return !firstName || !lastName || !alias || !password || !imageUrl;

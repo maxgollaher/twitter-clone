@@ -13,8 +13,8 @@ import { User, AuthToken } from "tweeter-shared";
 import { AuthenticatedView } from "../../../presenter/AuthenticatedPresenter";
 
 interface Props {
-  presenterGenerator: (view: AuthenticatedView) => LoginPresenter;
   originalUrl?: string;
+  presenter?: LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -44,7 +44,7 @@ const Login = (props: Props) => {
     navigate: navigate,
   };
 
-  const [presenter] = useState(props.presenterGenerator(listener));
+  const [presenter] = useState(props.presenter ?? new LoginPresenter(listener));
 
   const checkSubmitButtonStatus = (): boolean => {
     return !alias || !password;

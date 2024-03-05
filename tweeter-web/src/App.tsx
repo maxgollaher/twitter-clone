@@ -116,7 +116,6 @@ const UnauthenticatedRoutes = () => {
         path="/login"
         element={
           <Login
-            presenterGenerator={(view: AuthenticatedView) => new LoginPresenter(view)}
           />
         }
       />
@@ -124,9 +123,6 @@ const UnauthenticatedRoutes = () => {
         path="/register"
         element={
           <Register
-            presenterGenerator={(view: RegisterView) =>
-              new RegisterPresenter(view)
-            }
           />
         }
       />
@@ -134,7 +130,6 @@ const UnauthenticatedRoutes = () => {
         path="*"
         element={
           <Login
-            presenterGenerator={(view: AuthenticatedView) => new LoginPresenter(view)}
             originalUrl={location.pathname}
           />
         }
