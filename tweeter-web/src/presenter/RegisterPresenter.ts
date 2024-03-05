@@ -1,4 +1,3 @@
-import { UserService } from "../model/service/UserService";
 import { Buffer } from "buffer";
 import { ChangeEvent } from "react";
 import { AuthenticatedPresenter, AuthenticatedView } from "./AuthenticatedPresenter";
@@ -8,14 +7,10 @@ export interface RegisterView extends AuthenticatedView {
   setImageBytes: (bytes: Uint8Array) => void;
 }
 
-export class RegisterPresenter extends AuthenticatedPresenter<UserService> {
+export class RegisterPresenter extends AuthenticatedPresenter {
 
   public constructor(view: RegisterView) {
     super(view);
-  }
-
-  protected createService(): UserService {
-    return new UserService();
   }
 
   protected get view(): RegisterView {
