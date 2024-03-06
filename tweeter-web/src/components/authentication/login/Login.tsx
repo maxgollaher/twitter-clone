@@ -10,7 +10,6 @@ import {
   LoginPresenter
 } from "../../../presenter/LoginPresenter";
 import { User, AuthToken } from "tweeter-shared";
-import { AuthenticatedView } from "../../../presenter/AuthenticatedPresenter";
 
 interface Props {
   originalUrl?: string;

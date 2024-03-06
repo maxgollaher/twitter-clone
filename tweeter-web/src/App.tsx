@@ -15,8 +15,6 @@ import { FollowingPresenter } from "./presenter/FollowingPresenter";
 import { FollowersPresenter } from "./presenter/FollowersPresenter";
 import { FeedPresenter } from "./presenter/FeedPresenter";
 import { StoryPresenter } from "./presenter/StoryPresenter";
-import { LoginPresenter } from "./presenter/LoginPresenter";
-import { RegisterPresenter, RegisterView } from "./presenter/RegisterPresenter";
 import ItemScroller from "./components/mainLayout/ItemScroller";
 import { StatusService } from "./model/service/StatusService";
 import { Status, User } from "tweeter-shared";
@@ -24,7 +22,6 @@ import StatusItem from "./components/statusItem/StatusItem";
 import UserItem from "./components/userItem/UserItem";
 import { FollowService } from "./model/service/FollowService";
 import { PagedItemView } from "./presenter/PagedItemPresenter";
-import { AuthenticatedView } from "./presenter/AuthenticatedPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();
