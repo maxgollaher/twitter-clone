@@ -12,7 +12,7 @@ import {
   PostStatusPresenter,
   PostStatusView,
 } from "../../src/presenter/PostStatusPresenter";
-import { AuthToken, Status, User } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared";
 
 describe("PostStatusPresenter", () => {
   let mockPostStatusPresenterView: PostStatusView;
