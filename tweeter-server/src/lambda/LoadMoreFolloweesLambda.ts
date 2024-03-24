@@ -1,5 +1,5 @@
 
-import { LoadPagedItemRequest, LoadPagedItemResponse, StatusDeserializer, User } from "tweeter-shared";
+import { LoadPagedItemRequest, LoadPagedItemResponse, User } from "tweeter-shared";
 import { FollowService } from "../model/service/FollowService";
 
 

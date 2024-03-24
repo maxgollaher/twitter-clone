@@ -105,7 +105,7 @@ export class LoadPagedItemRequest<T> extends TweeterRequest {
     this.authToken = authToken;
     this.user = user;
     this.pageSize = pageSize;
-    this.lastItem = lastItem as T;
+    this.lastItem = lastItem;
   }
 }
 

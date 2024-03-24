@@ -235,6 +235,7 @@ export class FakeData {
    * Returns a followers count for the user. Always returns 20 for male users and 21 for female users.
    */
   public getFollowersCount(user: User): number | PromiseLike<number> {
+    console.log(JSON.stringify(user));
     return user.imageUrl === FEMALE_IMAGE_URL ? 21 : 20;
   }
 

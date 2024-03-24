@@ -237,9 +237,9 @@ export class Status {
 
   public equals(other: Status): boolean {
     return (
-      this._user.equals(other.user) &&
+      this._user.equals(other._user) &&
       this._timestamp === other._timestamp &&
-      this._post === other.post
+      this._post === other._post
     );
   }
 
