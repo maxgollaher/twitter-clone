@@ -27,9 +27,17 @@ export class ServerFacade {
   private SERVER_URL =
     "https://zv5191r7l2.execute-api.us-west-2.amazonaws.com/tweeter-stage";
 
-  private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
+  private clientCommunicator: ClientCommunicator;
   private _userDeserializer = new UserDeserializer();
   private _statusDeserializer = new StatusDeserializer();
+
+  constructor() {
+    this.clientCommunicator = this.getClientCommunicator();
+  }
+
+  getClientCommunicator(): ClientCommunicator {
+    return new ClientCommunicator(this.SERVER_URL);
+  }
 
   async login(request: LoginRequest): Promise<AuthenticateResponse> {
     const endpoint = "/service/login";

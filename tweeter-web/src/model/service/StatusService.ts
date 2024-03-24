@@ -8,7 +8,15 @@ import {
 import { ServerFacade } from "../net/ServerFacade";
 
 export class StatusService {
-  private _serverFacade: ServerFacade = new ServerFacade();
+  private _serverFacade: ServerFacade;
+
+  constructor() {
+    this._serverFacade = this.getServerFacade();
+  }
+
+  getServerFacade(): ServerFacade {
+    return new ServerFacade();
+  }
 
   public async loadMoreFeedItems(
     authToken: AuthToken,
@@ -22,9 +30,9 @@ export class StatusService {
       pageSize,
       lastItem
     );
-    console.log(request)
+    console.log(request);
     let response = await this._serverFacade.loadMoreFeedItems(request);
-    console.log(response)
+    console.log(response);
     return [response.items, response.hasMorePages];
   }
 
