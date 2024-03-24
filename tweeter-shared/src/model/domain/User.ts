@@ -53,6 +53,7 @@ export class User {
   }
 
   public equals(other: User): boolean {
+    console.log("This:" + this, "Other:" + other);
     return this._alias === other._alias;
   }
 

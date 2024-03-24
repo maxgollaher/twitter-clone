@@ -1,4 +1,5 @@
 import { AuthToken } from "../domain/AuthToken";
+import { Status } from "../domain/Status";
 import { User } from "../domain/User";
 
 export class TweeterResponse {}
@@ -39,7 +40,7 @@ export class AuthenticateResponse extends TweeterResponse {
     if (deserializedUser === null) {
       throw new Error(
         "AuthenticateResponse, could not deserialize user with json:\n" +
-          JSON.stringify(jsonObject._user)
+          JSON.stringify(jsonObject._user) + " " + JSON.stringify(jsonObject)
       );
     }
 
@@ -169,5 +170,68 @@ export class FollowResponse extends TweeterResponse {
       jsonObject._followersCount,
       jsonObject._followeesCount
     );
+  }
+}
+
+interface Deserializer<T> {
+  deserialize(json: string): T | null;
+}
+
+export class LoadPagedItemResponse<T> extends TweeterResponse {
+  private _items: T[];
+  private _hasMorePages: boolean;
+
+  constructor(items: T[], hasMorePages: boolean) {
+    super();
+    this._items = items;
+    this._hasMorePages = hasMorePages;
+  }
+
+  get items() {
+    return this._items;
+  }
+
+  get hasMorePages() {
+    return this._hasMorePages;
+  }
+
+  static fromJson<T>(json: JSON,  deserializer: Deserializer<T>): LoadPagedItemResponse<T> {
+    interface LoadPagedItemResponseJson extends ResponseJson {
+      _items: any[];
+      _hasMorePages: boolean;
+    }
+
+    const jsonObject: LoadPagedItemResponseJson =
+      json as unknown as LoadPagedItemResponseJson;
+
+    let newItems: T[] = [];
+    for (let itemIndex in jsonObject._items) {
+      let item = jsonObject._items[itemIndex];
+      let deserializedItem = deserializer.deserialize(JSON.stringify(item));
+      if (deserializedItem === null) {
+        throw new Error(
+          "LoadPagedItemResponse, could not deserialize item with json:\n" +
+            JSON.stringify(item)
+        );
+      }
+      newItems.push(deserializedItem);
+    }
+
+    return new LoadPagedItemResponse<T>(
+      newItems,
+      jsonObject._hasMorePages
+    );
+  }
+}
+
+export class UserDeserializer implements Deserializer<User> {
+  deserialize(json: string): User | null {
+    return User.fromJson(json);
+  }
+}
+
+export class StatusDeserializer implements Deserializer<Status> {
+  deserialize(json: string): Status | null {
+    return Status.fromJson(json);
   }
 }

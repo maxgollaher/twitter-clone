@@ -1,35 +1,54 @@
-import { AuthToken, User, Status, FakeData } from "tweeter-shared";
+import {
+  AuthToken,
+  User,
+  Status,
+  LoadPagedItemRequest,
+  PostStatusRequest,
+} from "tweeter-shared";
+import { ServerFacade } from "../net/ServerFacade";
 
 export class StatusService {
+  private _serverFacade: ServerFacade = new ServerFacade();
 
-    public async loadMoreFeedItems(
-        authToken: AuthToken,
-        user: User,
-        pageSize: number,
-        lastItem: Status | null
-    ): Promise<[Status[], boolean]> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-    };
+  public async loadMoreFeedItems(
+    authToken: AuthToken,
+    user: User,
+    pageSize: number,
+    lastItem: Status | null
+  ): Promise<[Status[], boolean]> {
+    let request = new LoadPagedItemRequest<Status>(
+      authToken,
+      user,
+      pageSize,
+      lastItem
+    );
+    console.log(request)
+    let response = await this._serverFacade.loadMoreFeedItems(request);
+    console.log(response)
+    return [response.items, response.hasMorePages];
+  }
 
-    public async loadMoreStoryItems(
-        authToken: AuthToken,
-        user: User,
-        pageSize: number,
-        lastItem: Status | null
-    ): Promise<[Status[], boolean]> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-    };
+  public async loadMoreStoryItems(
+    authToken: AuthToken,
+    user: User,
+    pageSize: number,
+    lastItem: Status | null
+  ): Promise<[Status[], boolean]> {
+    let request = new LoadPagedItemRequest<Status>(
+      authToken,
+      user,
+      pageSize,
+      lastItem
+    );
+    let response = await this._serverFacade.loadMoreStoryItems(request);
+    return [response.items, response.hasMorePages];
+  }
 
-    public async postStatus (
-        authToken: AuthToken,
-        newStatus: Status
-    ): Promise<void> {
-        // Pause so we can see the logging out message. Remove when connected to the server
-        await new Promise((f) => setTimeout(f, 2000));
-
-        // TODO: Call the server to post the status
-    };
-
+  public async postStatus(
+    authToken: AuthToken,
+    newStatus: Status
+  ): Promise<void> {
+    let request = new PostStatusRequest(authToken, newStatus);
+    await this._serverFacade.postStatus(request);
+  }
 }

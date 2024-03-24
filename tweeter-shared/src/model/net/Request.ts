@@ -1,4 +1,5 @@
 import { AuthToken } from "../domain/AuthToken";
+import { Status } from "../domain/Status";
 import { User } from "../domain/User";
 
 export class TweeterRequest {}
@@ -89,5 +90,33 @@ export class FollowRequest extends TweeterRequest {
     super();
     this.authToken = authToken;
     this.userToFollow = userToFollow;
+  }
+}
+
+
+export class LoadPagedItemRequest<T> extends TweeterRequest {
+  authToken: AuthToken;
+  user: User;
+  pageSize: number;
+  lastItem: T | null;
+
+  constructor(authToken: AuthToken, user: User, pageSize: number, lastItem: T | null) {
+    super();
+    this.authToken = authToken;
+    this.user = user;
+    this.pageSize = pageSize;
+    this.lastItem = lastItem as T;
+  }
+}
+
+
+export class PostStatusRequest extends TweeterRequest {
+  authToken: AuthToken;
+  status: Status;
+
+  constructor(authToken: AuthToken, status: Status) {
+    super();
+    this.authToken = authToken;
+    this.status = status;
   }
 }

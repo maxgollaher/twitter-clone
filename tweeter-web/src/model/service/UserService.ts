@@ -22,7 +22,6 @@ export class UserService {
     password: string,
     userImageBytes: Uint8Array
   ): Promise<[User, AuthToken]> {
-    // Not neded now, but will be needed when you make the request to the server in milestone 3
     let imageStringBase64: string =
       Buffer.from(userImageBytes).toString("base64");
 
@@ -107,7 +106,6 @@ export class UserService {
     authToken: AuthToken,
     userToFollow: User
   ): Promise<[followersCount: number, followeesCount: number]> {
-    // Pause so we can see the following message. Remove when connected to the server
     let request = new FollowRequest(authToken, userToFollow);
     let response = await this._serverFacade.follow(request);
 
@@ -118,7 +116,6 @@ export class UserService {
     authToken: AuthToken,
     userToUnfollow: User
   ): Promise<[followersCount: number, followeesCount: number]> {
-    // Pause so we can see the unfollowing message. Remove when connected to the server
     let request = new FollowRequest(authToken, userToUnfollow);
     let response = await this._serverFacade.unfollow(request);
 

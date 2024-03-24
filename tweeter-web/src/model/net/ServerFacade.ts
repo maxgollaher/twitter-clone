@@ -10,15 +10,26 @@ import {
   GetUserInfoResponse,
   GetUserRequest,
   GetUserResponse,
-  FollowResponse
+  FollowResponse,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
+import {
+  LoadPagedItemRequest,
+  User,
+  LoadPagedItemResponse,
+  Status,
+  UserDeserializer,
+  StatusDeserializer,
+} from "tweeter-shared";
+import { PostStatusRequest } from "tweeter-shared";
 
 export class ServerFacade {
   private SERVER_URL =
     "https://zv5191r7l2.execute-api.us-west-2.amazonaws.com/tweeter-stage";
 
   private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
+  private _userDeserializer = new UserDeserializer();
+  private _statusDeserializer = new StatusDeserializer();
 
   async login(request: LoginRequest): Promise<AuthenticateResponse> {
     const endpoint = "/service/login";
@@ -32,7 +43,7 @@ export class ServerFacade {
 
   async register(request: RegisterRequest): Promise<AuthenticateResponse> {
     const endpoint = "/service/register";
-    const response: JSON = await this.clientCommunicator.doPost<LoginRequest>(
+    const response: JSON = await this.clientCommunicator.doPost<RegisterRequest>(
       request,
       endpoint
     );
@@ -112,5 +123,57 @@ export class ServerFacade {
     );
 
     return FollowResponse.fromJson(response);
+  }
+
+  async loadMoreFollowees(
+    request: LoadPagedItemRequest<User>
+  ): Promise<LoadPagedItemResponse<User>> {
+    const endpoint = "/follow/loadFollowees";
+    const response: JSON = await this.clientCommunicator.doPost<
+      LoadPagedItemRequest<User>
+    >(request, endpoint);
+
+    return LoadPagedItemResponse.fromJson<User>(response, this._userDeserializer);
+  }
+
+  async loadMoreFollowers(
+    request: LoadPagedItemRequest<User>
+  ): Promise<LoadPagedItemResponse<User>> {
+    const endpoint = "/follow/loadFollowers";
+    const response: JSON = await this.clientCommunicator.doPost<
+      LoadPagedItemRequest<User>
+    >(request, endpoint);
+
+    return LoadPagedItemResponse.fromJson<User>(response, this._userDeserializer);
+  }
+
+  async loadMoreFeedItems(
+    request: LoadPagedItemRequest<Status>
+  ): Promise<LoadPagedItemResponse<Status>> {
+    const endpoint = "/feed/loadFeed";
+    const response: JSON = await this.clientCommunicator.doPost<
+      LoadPagedItemRequest<Status>
+    >(request, endpoint);
+
+    return LoadPagedItemResponse.fromJson<Status>(response, this._statusDeserializer);
+  }
+
+  async loadMoreStoryItems(
+    request: LoadPagedItemRequest<Status>
+  ): Promise<LoadPagedItemResponse<Status>> {
+    const endpoint = "/feed/loadStory";
+    const response: JSON = await this.clientCommunicator.doPost<
+      LoadPagedItemRequest<Status>
+    >(request, endpoint);
+
+    return LoadPagedItemResponse.fromJson<Status>(response, this._statusDeserializer);
+  }
+
+  async postStatus(request: PostStatusRequest): Promise<void> {
+    const endpoint = "/feed/postStatus";
+    await this.clientCommunicator.doPost<PostStatusRequest>(
+      request,
+      endpoint
+    );
   }
 }
