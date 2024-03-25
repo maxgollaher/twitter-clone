@@ -36,8 +36,9 @@ export class PostStatusPresenter extends Presenter {
 
       let status = new Status(post, currentUser!, Date.now());
 
-      await this.service.postStatus(authToken!, status);
+      let response = await this.service.postStatus(authToken!, status);
 
+      // TODO: Handle response
       this.view.clearLastInfoMessage();
       this.view.setPost("");
       this.view.displayInfoMessage("Status posted!", 2000);

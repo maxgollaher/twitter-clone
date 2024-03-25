@@ -11,6 +11,8 @@ import {
   GetUserRequest,
   GetUserResponse,
   FollowResponse,
+  PostStatusRequest,
+  PostStatusResponse
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 import {
@@ -21,7 +23,6 @@ import {
   UserDeserializer,
   StatusDeserializer,
 } from "tweeter-shared";
-import { PostStatusRequest } from "tweeter-shared";
 
 export class ServerFacade {
   private SERVER_URL =
@@ -177,11 +178,12 @@ export class ServerFacade {
     return LoadPagedItemResponse.fromJson<Status>(response, this._statusDeserializer);
   }
 
-  async postStatus(request: PostStatusRequest): Promise<void> {
+  async postStatus(request: PostStatusRequest): Promise<PostStatusResponse> {
     const endpoint = "/feed/postStatus";
-    await this.clientCommunicator.doPost<PostStatusRequest>(
+    const response: JSON = await this.clientCommunicator.doPost<PostStatusRequest>(
       request,
       endpoint
     );
+    return PostStatusResponse.fromJson(response);
   }
 }

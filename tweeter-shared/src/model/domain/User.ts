@@ -53,7 +53,7 @@ export class User {
   }
 
   public equals(other: User): boolean {
-    return this._alias === other._alias;
+    return this._alias === other.alias;
   }
 
   public static fromJson(json: string | null | undefined): User | null {

@@ -217,6 +217,7 @@ export class LoadPagedItemResponse<T> extends TweeterResponse {
       newItems.push(deserializedItem);
     }
 
+
     return new LoadPagedItemResponse<T>(
       newItems,
       jsonObject._hasMorePages
@@ -233,5 +234,31 @@ export class UserDeserializer implements Deserializer<User> {
 export class StatusDeserializer implements Deserializer<Status> {
   deserialize(json: string): Status | null {
     return Status.fromJson(json);
+  }
+}
+
+
+export class PostStatusResponse extends TweeterResponse {
+
+  private _success: boolean;
+
+  constructor(success: boolean) {
+    super();
+    this._success = success;
+  }
+
+  get success() {
+    return this._success;
+  }
+
+  static fromJson(json: JSON): PostStatusResponse {
+    interface PostStatusResponseJson extends ResponseJson {
+      _success: boolean;
+    }
+
+    const jsonObject: PostStatusResponseJson =
+      json as unknown as PostStatusResponseJson;
+
+    return new PostStatusResponse(jsonObject._success);
   }
 }

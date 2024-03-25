@@ -20,9 +20,13 @@ const ItemScroller = <Item, Service>(props: Props<Item, Service>) => {
 
   const { displayedUser, authToken } = useUserInfo();
 
-  // Load initial items
+  const loadMoreItemsCalled = useRef(false); // to track if loadMoreItems has been called in this render
+
   useEffect(() => {
-    loadMoreItems();
+    if (!loadMoreItemsCalled.current) {
+      loadMoreItemsCalled.current = true;
+      loadMoreItems();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

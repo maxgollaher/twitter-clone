@@ -168,11 +168,11 @@ export class FakeData {
     omit: User | null,
   ): [User[], boolean] {
     let userIndex = 0;
-
+    
     // Find the index of the first user to be returned
-    if (lastUser != null) {
+    if (lastUser ?? false) {
       for (let i = 0; i < this.fakeUsers.length; i++) {
-        if (this.fakeUsers[i].equals(lastUser)) {
+        if (this.fakeUsers[i].equals(lastUser!)) {
           userIndex = i + 1;
           break;
         }
@@ -209,10 +209,10 @@ export class FakeData {
     let statusIndex = 0;
 
     // Find the index of the first status to be returned
-    if (lastStatus != null) {
+    if (lastStatus ?? false) {
       for (let i = 0; i < this.fakeStatuses.length; i++) {
         let currentStatus = this.fakeStatuses[i];
-        if (currentStatus.equals(lastStatus)) {
+        if (currentStatus.equals(lastStatus!)) {
           statusIndex = i + 1;
           break;
         }

@@ -6,6 +6,7 @@ import {
   PostStatusRequest,
 } from "tweeter-shared";
 import { ServerFacade } from "../net/ServerFacade";
+import { PostStatusResponse } from "tweeter-shared";
 
 export class StatusService {
   private _serverFacade: ServerFacade;
@@ -30,9 +31,7 @@ export class StatusService {
       pageSize,
       lastItem
     );
-    console.log(request);
     let response = await this._serverFacade.loadMoreFeedItems(request);
-    console.log(response);
     return [response.items, response.hasMorePages];
   }
 
@@ -55,8 +54,8 @@ export class StatusService {
   public async postStatus(
     authToken: AuthToken,
     newStatus: Status
-  ): Promise<void> {
+  ): Promise<PostStatusResponse> {
     let request = new PostStatusRequest(authToken, newStatus);
-    await this._serverFacade.postStatus(request);
+    return await this._serverFacade.postStatus(request);
   }
 }

@@ -8,4 +8,4 @@ export { AuthToken } from "./model/domain/AuthToken";
 // uploading to lambda. Instead we have to list each export.
 export { FakeData } from "./util/FakeData";
 export { TweeterRequest, LoginRequest, RegisterRequest, LogoutRequest, GetUserRequest, GetIsFollowerRequest, GetUserInfoRequest, FollowRequest, LoadPagedItemRequest, PostStatusRequest } from "./model/net/Request";
-export { AuthenticateResponse, TweeterResponse, GetIsFollowerResponse, GetUserInfoResponse, GetUserResponse, FollowResponse, LoadPagedItemResponse, UserDeserializer, StatusDeserializer } from "./model/net/Response";
+export { AuthenticateResponse, TweeterResponse, GetIsFollowerResponse, GetUserInfoResponse, GetUserResponse, FollowResponse, LoadPagedItemResponse, UserDeserializer, StatusDeserializer, PostStatusResponse } from "./model/net/Response";
