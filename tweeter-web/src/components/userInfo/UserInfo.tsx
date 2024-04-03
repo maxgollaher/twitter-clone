@@ -26,12 +26,12 @@ const UserInfo = (props: Props) => {
 
   useEffect(() => {
     setIsFollowerStatus(authToken!, currentUser!, displayedUser!);
-  }, [currentUser, authToken, displayedUser]);
+  }, []);
 
   useEffect(() => {
     setNumbFollowees(authToken!, displayedUser!);
     setNumbFollowers(authToken!, displayedUser!);
-  }, [currentUser, authToken, displayedUser]);
+  }, []);
 
 
   const listener: UserInfoView = {
@@ -87,6 +87,7 @@ const UserInfo = (props: Props) => {
     event.preventDefault();
 
     presenter.unfollowDisplayedUser(authToken!, displayedUser!);
+
   };
 
   return (

@@ -56,6 +56,15 @@ export class GetUserRequest extends TweeterRequest {
     this.authToken = authToken;
     this.username = username;
   }
+
+  static fromJson(json: string | null | undefined): GetUserRequest | null {
+    if (json!!) {
+      let obj = JSON.parse(json);
+      return new GetUserRequest(obj.authToken, obj.username);
+    } else {
+      return null;
+    }
+  }
 }
 
 export class GetIsFollowerRequest extends TweeterRequest {
@@ -93,14 +102,18 @@ export class FollowRequest extends TweeterRequest {
   }
 }
 
-
 export class LoadPagedItemRequest<T> extends TweeterRequest {
   authToken: AuthToken;
   user: User;
   pageSize: number;
   lastItem: T | null;
 
-  constructor(authToken: AuthToken, user: User, pageSize: number, lastItem: T | null) {
+  constructor(
+    authToken: AuthToken,
+    user: User,
+    pageSize: number,
+    lastItem: T | null
+  ) {
     super();
     this.authToken = authToken;
     this.user = user;
@@ -108,7 +121,6 @@ export class LoadPagedItemRequest<T> extends TweeterRequest {
     this.lastItem = lastItem;
   }
 }
-
 
 export class PostStatusRequest extends TweeterRequest {
   authToken: AuthToken;
