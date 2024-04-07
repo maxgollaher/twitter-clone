@@ -50,7 +50,11 @@ export class StatusDao implements PaginatedFeedDao {
       TableName: this.tableName,
       Item: this.generateFeedItem(status),
     };
-    await this.client.send(new PutCommand(params));
+    try {
+      await this.client.send(new PutCommand(params));
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   async getItem(status: StatusDTO): Promise<StatusDTO | undefined> {
@@ -58,14 +62,18 @@ export class StatusDao implements PaginatedFeedDao {
       TableName: this.tableName,
       Key: this.generateFeedItem(status),
     };
-    const output = await this.client.send(new GetCommand(params));
-    return output.Item == undefined
-      ? undefined
-      : new StatusDTO(
-          output.Item[this.primaryKey],
-          output.Item[this.sortKey],
-          Status.fromJson(JSON.parse(output.Item[this.post]))!
-        );
+    try {
+      const output = await this.client.send(new GetCommand(params));
+      return output.Item == undefined
+        ? undefined
+        : new StatusDTO(
+            output.Item[this.primaryKey],
+            output.Item[this.sortKey],
+            Status.fromJson(JSON.parse(output.Item[this.post]))!
+          );
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   async deleteItem(status: StatusDTO): Promise<void> {
@@ -73,7 +81,11 @@ export class StatusDao implements PaginatedFeedDao {
       TableName: this.tableName,
       Key: this.generateFeedItem(status),
     };
-    await this.client.send(new DeleteCommand(params));
+    try {
+      await this.client.send(new DeleteCommand(params));
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   async updateItem(status: StatusDTO): Promise<void> {
@@ -85,7 +97,11 @@ export class StatusDao implements PaginatedFeedDao {
         ":p": JSON.stringify(status.post),
       },
     };
-    await this.client.send(new UpdateCommand(params));
+    try {
+      await this.client.send(new UpdateCommand(params));
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   async getAllItems(key: string, attrName: string): Promise<StatusDTO[]> {
@@ -96,14 +112,18 @@ export class StatusDao implements PaginatedFeedDao {
         ":v": attrName,
       },
     };
-    const output = await this.client.send(new ScanCommand(params));
-    return (output.Items || []).map((item) => {
-      return new StatusDTO(
-        item[this.primaryKey],
-        item[this.sortKey],
-        Status.fromJson(JSON.parse(item[this.post]))!
-      );
-    });
+    try {
+      const output = await this.client.send(new ScanCommand(params));
+      return (output.Items || []).map((item) => {
+        return new StatusDTO(
+          item[this.primaryKey],
+          item[this.sortKey],
+          Status.fromJson(JSON.parse(item[this.post]))!
+        );
+      });
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   protected generateFeedItem(status: StatusDTO) {
@@ -138,14 +158,18 @@ export class StatusDao implements PaginatedFeedDao {
             },
     };
     const items: Status[] = [];
-    const data = await this.client.send(new QueryCommand(params));
-    const hasMorePages = data.LastEvaluatedKey !== undefined;
-    data.Items?.forEach((item) => {
-      let status = Status.fromJson(item[this.post]);
-      items.push(status!);
-    });
+    try {
+      const data = await this.client.send(new QueryCommand(params));
+      const hasMorePages = data.LastEvaluatedKey !== undefined;
+      data.Items?.forEach((item) => {
+        let status = Status.fromJson(item[this.post]);
+        items.push(status!);
+      });
 
-    return new DataPage<Status>(items, hasMorePages);
+      return new DataPage<Status>(items, hasMorePages);
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 }
 

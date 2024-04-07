@@ -2,20 +2,27 @@ import {
   LoadPagedItemRequest,
   Status,
   LoadPagedItemResponse,
+  AuthToken,
+  User,
 } from "tweeter-shared";
 import { StatusService } from "../model/service/StatusService";
 
 export async function handler(
   event: LoadPagedItemRequest<Status>
 ): Promise<LoadPagedItemResponse<Status>> {
-  let lastItem: Status | null = event.lastItem;
-  if (event.lastItem) {
-    lastItem = Status.fromJson(JSON.stringify(event.lastItem));
+  let lastItem = event.lastItem ? Status.fromJson(JSON.stringify(event.lastItem)) : null;
+  let authToken = AuthToken.fromJson(JSON.stringify(event.authToken));
+  let user = User.fromJson(JSON.stringify(event.user));
+  let pageSize = event.pageSize;
+
+  if (!authToken || !user || !pageSize) {
+    throw new Error("[Bad Request] Missing required fields.");
   }
+
   let data = await new StatusService().loadMoreStoryItems(
-    event.authToken,
-    event.user,
-    event.pageSize,
+    authToken!,
+    user!,
+    pageSize,
     lastItem
   );
   let response = new LoadPagedItemResponse<Status>(...data);

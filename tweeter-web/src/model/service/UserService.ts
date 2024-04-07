@@ -34,7 +34,7 @@ export class UserService {
     );
     let response = await this._serverFacade.register(request);
 
-    if (response.user === null) {
+    if (response.user === null || response.token === null) {
       throw new Error("Invalid registration");
     }
 
@@ -48,7 +48,7 @@ export class UserService {
     let request = new LoginRequest(alias, password);
     let response = await this._serverFacade.login(request);
 
-    if (response.user === null) {
+    if (response.user === null || response.token === null) {
       throw new Error("Invalid login");
     }
 

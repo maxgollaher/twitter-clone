@@ -25,16 +25,20 @@ export class AuthTokenDao implements IDao {
     // create the 1 hour expiration time
     const expiration = token.timestamp + 3600;
 
-    const params = {
-      TableName: this.tableName,
-      Item: {
-        [this.primaryKey]: token.token,
-        [this.alias]: token.alias,
-        [this.timestamp]: token.timestamp,
-        [this.expireTime]: expiration,
-      },
-    };
-    await this.client.send(new PutCommand(params));
+    try {
+      const params = {
+        TableName: this.tableName,
+        Item: {
+          [this.primaryKey]: token.token,
+          [this.alias]: token.alias,
+          [this.timestamp]: token.timestamp,
+          [this.expireTime]: expiration,
+        },
+      };
+      await this.client.send(new PutCommand(params));
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   /**
@@ -43,21 +47,22 @@ export class AuthTokenDao implements IDao {
    * @returns the token or null if the token is not found
    */
   async getItem(token: string): Promise<AuthTokenDTO | null> {
-    console.log(`token: ${token}`);
     const params = {
       TableName: this.tableName,
       Key: this.generateTokenItem(token),
     };
-    console.log(`params: ${JSON.stringify(params)}`);
-    const output = await this.client.send(new GetCommand(params));
-    console.log(`output: ${JSON.stringify(output)}`);
-    return output.Item == undefined
-      ? null
-      : new AuthTokenDTO(
-          output.Item[this.primaryKey],
-          output.Item[this.timestamp],
-          output.Item[this.alias]
-        );
+    try {
+      const output = await this.client.send(new GetCommand(params));
+      return output.Item == undefined
+        ? null
+        : new AuthTokenDTO(
+            output.Item[this.primaryKey],
+            output.Item[this.timestamp],
+            output.Item[this.alias]
+          );
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   private generateTokenItem(token: string) {
@@ -77,6 +82,10 @@ export class AuthTokenDao implements IDao {
         [this.primaryKey]: token,
       },
     };
-    await this.client.send(new DeleteCommand(params));
+    try {
+      await this.client.send(new DeleteCommand(params));
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 }

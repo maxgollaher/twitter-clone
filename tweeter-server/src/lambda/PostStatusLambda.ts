@@ -1,11 +1,20 @@
 import { StatusService } from "../model/service/StatusService";
-import { PostStatusRequest, PostStatusResponse } from "tweeter-shared";
+import {
+  AuthToken,
+  PostStatusRequest,
+  PostStatusResponse,
+  Status,
+} from "tweeter-shared";
 
+export async function handler(
+  event: PostStatusRequest
+): Promise<PostStatusResponse> {
+  let authToken = AuthToken.fromJson(JSON.stringify(event.authToken));
+  let status = Status.fromJson(JSON.stringify(event.status));
 
-export async function handler (event: PostStatusRequest): Promise<PostStatusResponse> {
+  if (!authToken || !status) {
+    throw new Error("[Bad Request] Missing required fields.");
+  }
 
-  console.log("PostStatusLambda: Processing event: ", JSON.stringify(event));
-
-    return await new StatusService().postStatus(event.authToken, event.status);
-
-  };
+  return await new StatusService().postStatus(event.authToken, event.status);
+}

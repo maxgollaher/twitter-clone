@@ -2,17 +2,14 @@ import { AuthToken } from "tweeter-shared";
 import { DaoFactory, IDao } from "../../dataAccess/DaoFactory";
 
 export class AuthService {
-  protected static DaoFactory = new DaoFactory();
+  protected static db = new DaoFactory();
   protected static authTokenDao: IDao =
-    AuthService.DaoFactory.getAuthTokenDao();
+    AuthService.db.authToken;
 
-  protected async verifyAuthToken(token: AuthToken): Promise<boolean> {
-    token = AuthToken.fromJson(JSON.stringify(token))!;
-
+  protected async verifyAuthToken(token: AuthToken): Promise<void> {
     let authToken = await AuthService.authTokenDao.getItem(token.token);
-    if (authToken == undefined) {
-      throw new Error("Invalid token");
+    if (!authToken) {
+      throw new Error("[Unauthorized] Invalid token");
     }
-    return true;
   }
 }

@@ -9,11 +9,11 @@ import { AuthService } from "./AuthService";
 
 export class StatusService extends AuthService {
   private static followsDao: PaginatedDao =
-    StatusService.DaoFactory.getFollowsDao();
+    StatusService.db.follows;
   private static feedDao: PaginatedFeedDao =
-    StatusService.DaoFactory.getFeedDao();
+    StatusService.db.feed;
   private static storyDao: PaginatedFeedDao =
-    StatusService.DaoFactory.getStoryDao();
+    StatusService.db.story;
 
   public async loadMoreFeedItems(
     authToken: AuthToken,
@@ -21,11 +21,10 @@ export class StatusService extends AuthService {
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
-    this.verifyAuthToken(authToken);
+    await this.verifyAuthToken(authToken);
 
-    let alias = JSON.parse(JSON.stringify(user))._alias;
     let response: DataPage<Status> = await StatusService.feedDao.getPageOfFeed(
-      alias,
+      user.alias,
       pageSize,
       lastItem?.timestamp
     );
@@ -38,11 +37,10 @@ export class StatusService extends AuthService {
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
-    this.verifyAuthToken(authToken);
+    await this.verifyAuthToken(authToken);
 
-    let alias = JSON.parse(JSON.stringify(user))._alias;
     let response: DataPage<Status> = await StatusService.storyDao.getPageOfFeed(
-      alias,
+      user.alias,
       pageSize,
       lastItem?.timestamp
     );
@@ -53,29 +51,25 @@ export class StatusService extends AuthService {
     authToken: AuthToken,
     newStatus: Status
   ): Promise<PostStatusResponse> {
-    this.verifyAuthToken(authToken);
-
-    // get the alias of the user
-    let status: Status = Status.fromJson(JSON.stringify(newStatus))!;
-    let alias = status.user.alias;
+    await this.verifyAuthToken(authToken);
 
     // Add the status to the feed of everyone who follows the user
     let followers = await StatusService.followsDao.getAllItems(
-      alias,
+      newStatus.user.alias,
       "follower_handle"
     );
     let follower: Follower;
     for (follower of followers) {
       let statusDTO = new StatusDTO(
         follower.followee_handle,
-        status.timestamp,
-        status
+        newStatus.timestamp,
+        newStatus
       );
       await StatusService.feedDao.putItem(statusDTO);
     }
 
     // Add the status to the user's own story
-    let statusDTO = new StatusDTO(alias, status.timestamp, status);
+    let statusDTO = new StatusDTO(newStatus.user.alias, newStatus.timestamp, newStatus);
     await StatusService.storyDao.putItem(statusDTO);
 
     return new PostStatusResponse(true);

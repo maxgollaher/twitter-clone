@@ -32,17 +32,21 @@ export class UserDao implements IDao {
         [this.primaryKey]: key,
       },
     };
-    const output = await this.client.send(new GetCommand(params));
-    return output.Item == undefined
-      ? null
-      : new UserDTO(
-          output.Item[this.firstName],
-          output.Item[this.lastName],
-          output.Item[this.primaryKey],
-          output.Item[this.imageUrl],
-          output.Item[this.password],
-          output.Item[this.salt]
-        );
+    try {
+      const output = await this.client.send(new GetCommand(params));
+      return output.Item == undefined
+        ? null
+        : new UserDTO(
+            output.Item[this.firstName],
+            output.Item[this.lastName],
+            output.Item[this.primaryKey],
+            output.Item[this.imageUrl],
+            output.Item[this.password],
+            output.Item[this.salt]
+          );
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   /**
@@ -56,7 +60,11 @@ export class UserDao implements IDao {
         [this.primaryKey]: key,
       },
     };
-    await this.client.send(new DeleteCommand(params));
+    try {
+      await this.client.send(new DeleteCommand(params));
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   /**
@@ -70,18 +78,21 @@ export class UserDao implements IDao {
     const hash = CryptoJS.SHA256(user.password + salt);
     const hashedPassword = hash.toString(CryptoJS.enc.Base64);
 
-    const params = {
-      TableName: this.tableName,
-      Item: {
-        [this.primaryKey]: user.alias,
-        [this.firstName]: user.firstName,
-        [this.lastName]: user.lastName,
-        [this.imageUrl]: user.imageUrl,
-        [this.password]: hashedPassword,
-        [this.salt]: salt,
-      },
-    };
-
-    await this.client.send(new PutCommand(params));
+    try {
+      const params = {
+        TableName: this.tableName,
+        Item: {
+          [this.primaryKey]: user.alias,
+          [this.firstName]: user.firstName,
+          [this.lastName]: user.lastName,
+          [this.imageUrl]: user.imageUrl,
+          [this.password]: hashedPassword,
+          [this.salt]: salt,
+        },
+      };
+      await this.client.send(new PutCommand(params));
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 }

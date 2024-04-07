@@ -13,31 +13,37 @@ export interface IDao {
 }
 
 export interface IDaoFactory {
-  getUserDao(): IDao;
-  getFollowsDao(): PaginatedDao;
-  getAuthTokenDao(): IDao;
-  getFeedDao(): PaginatedFeedDao;
-  getStoryDao(): PaginatedFeedDao;
+  get users(): IDao;
+  get follows(): PaginatedDao;
+  get authToken(): IDao;
+  get feed(): PaginatedFeedDao;
+  get story(): PaginatedFeedDao;
 }
 
 export class DaoFactory implements IDaoFactory {
-  getUserDao(): IDao {
-    return new UserDao();
+  private _usersDao: IDao = new UserDao();
+  private _followsDao: PaginatedDao = new FollowsDao();
+  private _authTokenDao: IDao = new AuthTokenDao();
+  private _feedDao: PaginatedFeedDao = new FeedDao();
+  private _storyDao: PaginatedFeedDao = new StoryDao();
+
+  get users(): IDao {
+    return this._usersDao;
   }
 
-  getFollowsDao(): PaginatedDao {
-    return new FollowsDao();
+  get follows(): PaginatedDao {
+    return this._followsDao;
   }
 
-  getAuthTokenDao(): IDao {
-    return new AuthTokenDao();
+  get authToken(): IDao {
+    return this._authTokenDao;
   }
 
-  getFeedDao(): PaginatedFeedDao {
-    return new FeedDao();
+  get feed(): PaginatedFeedDao {
+    return this._feedDao;
   }
 
-  getStoryDao(): PaginatedFeedDao {
-    return new StoryDao();
+  get story(): PaginatedFeedDao {
+    return this._storyDao;
   }
 }

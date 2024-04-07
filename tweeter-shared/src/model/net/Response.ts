@@ -2,7 +2,31 @@ import { AuthToken } from "../domain/AuthToken";
 import { Status } from "../domain/Status";
 import { User } from "../domain/User";
 
-export class TweeterResponse {}
+export class TweeterResponse {
+  _success: boolean;
+  _message: string | null;
+
+  constructor() {
+    this._success = true;
+    this._message = null;
+  }
+
+  get success() {
+    return this._success;
+  }
+
+  get message() {
+    return this._message;
+  }
+
+  set success(success: boolean) {
+    this._success = success;
+  }
+
+  set message(message: string | null) {
+    this._message = message;
+  }
+}
 
 interface ResponseJson {
   _success: boolean;
@@ -10,13 +34,13 @@ interface ResponseJson {
 }
 
 export class AuthenticateResponse extends TweeterResponse {
-  private _user: User;
-  private _token: AuthToken;
+  private _user: User | null;
+  private _token: AuthToken | null;
 
-  constructor(user: User, token: AuthToken) {
+  constructor(user?: User, token?: AuthToken) {
     super();
-    this._user = user;
-    this._token = token;
+    this._user = user || null;
+    this._token = token || null;
   }
 
   get user() {
@@ -240,15 +264,9 @@ export class StatusDeserializer implements Deserializer<Status> {
 
 export class PostStatusResponse extends TweeterResponse {
 
-  private _success: boolean;
-
   constructor(success: boolean) {
     super();
     this._success = success;
-  }
-
-  get success() {
-    return this._success;
   }
 
   static fromJson(json: JSON): PostStatusResponse {

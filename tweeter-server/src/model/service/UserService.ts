@@ -17,9 +17,8 @@ const BUCKET = "max-gollaher-tweeter";
 const REGION = "us-west-2";
 
 export class UserService extends AuthService {
-  private static userDao: IDao = UserService.DaoFactory.getUserDao();
-  private static followsDao: PaginatedDao =
-    UserService.DaoFactory.getFollowsDao();
+  private static userDao: IDao = UserService.db.users;
+  private static followsDao: PaginatedDao = UserService.db.follows;
 
   private async getAuthToken(alias: string): Promise<AuthToken> {
     let authToken = AuthToken.Generate();
@@ -40,9 +39,18 @@ export class UserService extends AuthService {
     password: string,
     userImageBytes: string
   ): Promise<[User, AuthToken]> {
+
+    // Check if the alias is already taken
+    let existingUser = await UserService.userDao.getItem(alias);
+    if (!existingUser) {
+      throw new Error("[Bad Request] Alias already taken.");
+    }
+
+    // upload image to s3
     let fileName = alias + ".png";
     const imageUrl = await this.putImage(fileName, userImageBytes);
 
+    // add user to database
     let user = new UserDTO(firstName, lastName, alias, imageUrl, password);
     await UserService.userDao.putItem(user);
     let response = (await UserService.userDao.getItem(alias)).toUser();
@@ -55,15 +63,10 @@ export class UserService extends AuthService {
     alias: string,
     password: string
   ): Promise<[User, AuthToken]> {
-    let isValid = await this.verifyUser(alias, password);
-    if (!isValid) {
-      throw new Error("Invalid alias or password");
-    }
+    await this.verifyUser(alias, password);
+
     let user = (await UserService.userDao.getItem(alias)).toUser();
     let authToken = await this.getAuthToken(alias);
-
-    console.log(`User: ${JSON.stringify(user)}`);
-    console.log(`AuthToken: ${JSON.stringify(authToken)}`);
 
     return [user, authToken];
   }
@@ -76,7 +79,7 @@ export class UserService extends AuthService {
     authToken: AuthToken,
     alias: string
   ): Promise<User | null> {
-    this.verifyAuthToken(authToken);
+    await this.verifyAuthToken(authToken);
     let response = await UserService.userDao.getItem(alias);
     return response?.toUser() || null;
   }
@@ -86,12 +89,12 @@ export class UserService extends AuthService {
     user: User,
     selectedUser: User
   ): Promise<boolean> {
-    this.verifyAuthToken(authToken);
+    await this.verifyAuthToken(authToken);
     let followerRelationship = new Follower(
-      user.alias,
-      user.name,
       selectedUser.alias,
-      selectedUser.name
+      selectedUser.name,
+      user.alias,
+      user.name
     );
     let response = await UserService.followsDao.getItem(followerRelationship);
     return response !== undefined;
@@ -101,7 +104,7 @@ export class UserService extends AuthService {
     authToken: AuthToken,
     user: User
   ): Promise<number> {
-    this.verifyAuthToken(authToken);
+    await this.verifyAuthToken(authToken);
     let response = await UserService.followsDao.getCount(
       user.alias,
       "followee_handle"
@@ -114,7 +117,7 @@ export class UserService extends AuthService {
     authToken: AuthToken,
     user: User
   ): Promise<number> {
-    this.verifyAuthToken(authToken);
+    await this.verifyAuthToken(authToken);
     let response = await UserService.followsDao.getCount(
       user.alias,
       "follower_handle"
@@ -126,12 +129,18 @@ export class UserService extends AuthService {
     authToken: AuthToken,
     userToFollow: User
   ): Promise<[followersCount: number, followeesCount: number]> {
-    this.verifyAuthToken(authToken);
+    await this.verifyAuthToken(authToken);
 
     let token: AuthTokenDTO = await UserService.authTokenDao.getItem(
       authToken.token
     );
-    let user: User = (await UserService.userDao.getItem(token!.alias)).toUser();
+
+    let user: User;
+    try {
+      user = (await UserService.userDao.getItem(token!.alias)).toUser();
+    } catch (error) {
+      throw new Error("[Not Found] User not found.");
+    }
 
     let follower = new Follower(
       userToFollow.alias,
@@ -151,10 +160,20 @@ export class UserService extends AuthService {
     authToken: AuthToken,
     userToUnfollow: User
   ): Promise<[followersCount: number, followeesCount: number]> {
-    this.verifyAuthToken(authToken);
+    await this.verifyAuthToken(authToken);
 
     let token = await UserService.authTokenDao.getItem(authToken.token);
-    let user = (await UserService.userDao.getItem(token!.alias)).toUser();
+
+    let user: User;
+    try {
+      user = (await UserService.userDao.getItem(token!.alias)).toUser();
+    } catch (error) {
+      throw new Error("[Not Found] User not found.");
+    }
+
+    if (user.alias === userToUnfollow.alias) {
+      throw new Error("[Bad Request] Cannot unfollow yourself.");
+    }
 
     let follower = new Follower(
       userToUnfollow.alias,
@@ -197,29 +216,26 @@ export class UserService extends AuthService {
       await client.send(c);
       return `https://${BUCKET}.s3.${REGION}.amazonaws.com/image/${fileName}`;
     } catch (error) {
-      throw Error("s3 put image failed with: " + error);
+      throw Error("[Internal Server Error] s3 putImage failed with: " + error);
     }
   }
 
-  async verifyUser(alias: string, password: string): Promise<boolean> {
+  private async verifyUser(alias: string, password: string): Promise<boolean> {
     const user = await UserService.userDao.getItem(alias);
 
     if (user === null) {
-      return false; // User not found
+      throw new Error("[Bad Request] User not found.");
     }
 
     // Hash the provided password with the retrieved salt
     const hash = CryptoJS.SHA256(password + user.salt);
     const hashedPassword = hash.toString(CryptoJS.enc.Base64);
 
-    console.log(`Hashed password: ${hashedPassword}`);
-    console.log(`Stored password: ${user.password}`);
-
     // Compare the hashed password with the stored hashed password
     const isPasswordValid = hashedPassword === user.password;
 
     if (!isPasswordValid) {
-      console.log(`Invalid password for user ${alias}.`);
+      throw new Error("[Bad Request] Invalid username or password.");
     }
 
     return isPasswordValid;

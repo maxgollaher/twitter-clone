@@ -1,16 +1,15 @@
-import { GetUserRequest, GetUserResponse } from "tweeter-shared";
+import { AuthToken, GetUserRequest, GetUserResponse, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 
 export async function handler(event: GetUserRequest): Promise<GetUserResponse> {
-  console.log("GetUserLambda: Processing event: ", event);
-  console.log(event.username);
+  let username = JSON.parse(JSON.stringify(event)).username;
+  let authToken = AuthToken.fromJson(JSON.stringify(event.authToken));
 
-  console.log("GetUserRequest as JSON: ", JSON.stringify(event)); 
-  console.log("GetUserRequest.username: ", JSON.parse(JSON.stringify(event)).username)
+  if (!authToken || !username) {
+    throw new Error("[Bad Request] Missing required fields.");
+  }
 
-  event = JSON.parse(JSON.stringify(event));
-
-  let data = await new UserService().getUser(event.authToken, event.username);
+  let data = await new UserService().getUser(authToken!, username);
   let response = new GetUserResponse(data);
   return response;
 }

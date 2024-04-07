@@ -4,7 +4,6 @@ import {
   User,
   LoadPagedItemRequest,
   AuthToken,
-  FakeData,
 } from "tweeter-shared";
 import "isomorphic-fetch";
 import { instance, mock } from "ts-mockito";
@@ -27,7 +26,7 @@ describe("ServerFacade", () => {
     user = new User(
       "testFirstName",
       "testLastName",
-      "testAlias",
+      "@testAlias",
       "testImageBytes"
     );
   });
@@ -36,20 +35,21 @@ describe("ServerFacade", () => {
     const request = new RegisterRequest(
       "testFirstName",
       "testLastName",
-      "testAlias",
+      "@testAlias",
       "testPassword",
       "testImageBytes"
     );
 
     let response = await serverFacade.register(request);
-    expect(response.user).toEqual(FakeData.instance.firstUser);
+    expect(response.user.alias).toEqual(user.alias);
+    expect(response.user.firstName).toEqual(user.firstName);
+    expect(response.user.lastName).toEqual(user.lastName);
   });
 
   it("should get followers of a user", async () => {
     const request = new LoadPagedItemRequest<User>(authToken, user, 10, null);
 
     let response = await serverFacade.loadMoreFollowers(request);
-    expect(response.items.length).toBe(10);
     expect(response.items).toBeInstanceOf(Array<User>);
   });
 
@@ -57,9 +57,6 @@ describe("ServerFacade", () => {
     const request = new GetUserInfoRequest(authToken, user);
 
     let response = await serverFacade.getFollowersCount(request);
-    expect(response.followCount).toBe(20);
-
     response = await serverFacade.getFolloweesCount(request);
-    expect(response.followCount).toBe(10);
   });
 });

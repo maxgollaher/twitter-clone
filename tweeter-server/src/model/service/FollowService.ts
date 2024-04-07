@@ -7,9 +7,9 @@ import { PaginatedDao } from "../../dataAccess/FollowsDao";
 import { AuthService } from "./AuthService";
 
 export class FollowService extends AuthService {
-  private static userDao: IDao = FollowService.DaoFactory.getUserDao();
+  private static userDao: IDao = FollowService.db.users;
   private static followsDao: PaginatedDao =
-    FollowService.DaoFactory.getFollowsDao();
+    FollowService.db.follows;
 
   public async loadMoreFollowers(
     authToken: AuthToken,
@@ -17,12 +17,11 @@ export class FollowService extends AuthService {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    this.verifyAuthToken(authToken);
+    await this.verifyAuthToken(authToken);
 
-    let alias = JSON.parse(JSON.stringify(user))._alias;
     let response: DataPage<Follower> =
       await FollowService.followsDao.getPageOfFollowers(
-        alias,
+        user.alias,
         pageSize,
         lastItem?.alias
       );
@@ -48,12 +47,11 @@ export class FollowService extends AuthService {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    this.verifyAuthToken(authToken);
+    await this.verifyAuthToken(authToken);
 
-    let alias = JSON.parse(JSON.stringify(user))._alias;
     let response: DataPage<Follower> =
       await FollowService.followsDao.getPageOfFollowees(
-        alias,
+        user.alias,
         pageSize,
         lastItem?.alias
       );

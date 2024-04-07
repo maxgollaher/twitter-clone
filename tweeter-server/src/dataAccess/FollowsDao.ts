@@ -61,7 +61,11 @@ export class FollowsDao implements PaginatedDao {
         [this.followeeNameAttr]: follower.followee_name,
       },
     };
-    await this.client.send(new PutCommand(params));
+    try {
+      await this.client.send(new PutCommand(params));
+    } catch (error: any) {
+      throw new Error("[InternalServerError]" + error.message);
+    }
   }
 
   /**
@@ -75,15 +79,20 @@ export class FollowsDao implements PaginatedDao {
       TableName: this.tableName,
       Key: this.generateFollowerItem(follower),
     };
-    const output = await this.client.send(new GetCommand(params));
-    return output.Item == undefined
-      ? undefined
-      : new Follower(
-          output.Item[this.followerAttr],
-          output.Item[this.followerNameAttr],
-          output.Item[this.followeeAttr],
-          output.Item[this.followeeNameAttr]
-        );
+
+    try {
+      const output = await this.client.send(new GetCommand(params));
+      return output.Item == undefined
+        ? undefined
+        : new Follower(
+            output.Item[this.followerAttr],
+            output.Item[this.followerNameAttr],
+            output.Item[this.followeeAttr],
+            output.Item[this.followeeNameAttr]
+          );
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   /**
@@ -101,7 +110,11 @@ export class FollowsDao implements PaginatedDao {
       },
     };
 
-    await this.client.send(new UpdateCommand(params));
+    try {
+      await this.client.send(new UpdateCommand(params));
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   /**
@@ -113,7 +126,11 @@ export class FollowsDao implements PaginatedDao {
       TableName: this.tableName,
       Key: this.generateFollowerItem(follower),
     };
-    await this.client.send(new DeleteCommand(params));
+    try {
+      await this.client.send(new DeleteCommand(params));
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   async getCount(key: any, attrName: any): Promise<number> {
@@ -133,8 +150,7 @@ export class FollowsDao implements PaginatedDao {
       const count = output.Items ? output.Items.length : 0;
       return count;
     } catch (error) {
-      console.error("Error scanning the table:", error);
-      throw error;
+      throw new Error("[InternalServerError]" + error);
     }
   }
 
@@ -155,16 +171,21 @@ export class FollowsDao implements PaginatedDao {
         ":name": key,
       },
     };
-    const output = await this.client.send(new ScanCommand(params));
-    return (output.Items || []).map(
-      (item) =>
-        new Follower(
-          item[this.followerAttr],
-          item[this.followerNameAttr],
-          item[this.followeeAttr],
-          item[this.followeeNameAttr]
-        )
-    );
+
+    try {
+      const output = await this.client.send(new ScanCommand(params));
+      return (output.Items || []).map(
+        (item) =>
+          new Follower(
+            item[this.followerAttr],
+            item[this.followerNameAttr],
+            item[this.followeeAttr],
+            item[this.followeeNameAttr]
+          )
+      );
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   /**
@@ -197,19 +218,24 @@ export class FollowsDao implements PaginatedDao {
             },
     };
     const items: Follower[] = [];
-    const data = await this.client.send(new QueryCommand(params));
-    const hasMorePages = data.LastEvaluatedKey !== undefined;
-    data.Items?.forEach((item) => {
-      items.push(
-        new Follower(
-          item[this.followerAttr],
-          item[this.followerNameAttr],
-          item[this.followeeAttr],
-          item[this.followeeNameAttr]
-        )
-      );
-    });
-    return new DataPage<Follower>(items, hasMorePages);
+
+    try {
+      const data = await this.client.send(new QueryCommand(params));
+      const hasMorePages = data.LastEvaluatedKey !== undefined;
+      data.Items?.forEach((item) => {
+        items.push(
+          new Follower(
+            item[this.followerAttr],
+            item[this.followerNameAttr],
+            item[this.followeeAttr],
+            item[this.followeeNameAttr]
+          )
+        );
+      });
+      return new DataPage<Follower>(items, hasMorePages);
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   /**
@@ -241,19 +267,24 @@ export class FollowsDao implements PaginatedDao {
             },
     };
     const items: Follower[] = [];
-    const data = await this.client.send(new QueryCommand(params));
-    const hasMorePages = data.LastEvaluatedKey !== undefined;
-    data.Items?.forEach((item) => {
-      items.push(
-        new Follower(
-          item[this.followerAttr],
-          item[this.followerNameAttr],
-          item[this.followeeAttr],
-          item[this.followeeNameAttr]
-        )
-      );
-    });
-    return new DataPage<Follower>(items, hasMorePages);
+
+   try {
+     const data = await this.client.send(new QueryCommand(params));
+     const hasMorePages = data.LastEvaluatedKey !== undefined;
+     data.Items?.forEach((item) => {
+       items.push(
+         new Follower(
+           item[this.followerAttr],
+           item[this.followerNameAttr],
+           item[this.followeeAttr],
+           item[this.followeeNameAttr]
+         )
+       );
+     });
+     return new DataPage<Follower>(items, hasMorePages);
+   } catch (error) {
+    throw new Error("[InternalServerError]" + error);
+   }
   }
 
   private generateFollowerItem(follower: Follower) {
