@@ -1,7 +1,6 @@
-import { StatusItemPresenter } from './StatusItemPresenter';
-import { AuthToken, Status, User } from 'tweeter-shared';
+import { AuthToken, Status, User } from "tweeter-shared";
 import { PAGE_SIZE, PagedItemView } from "./PagedItemPresenter";
-
+import { StatusItemPresenter } from "./StatusItemPresenter";
 
 export class FeedPresenter extends StatusItemPresenter {
   public constructor(view: PagedItemView<Status>) {

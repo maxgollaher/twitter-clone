@@ -9,7 +9,9 @@ import { FollowService } from "../model/service/FollowService";
 export async function handler(
   event: LoadPagedItemRequest<User>
 ): Promise<LoadPagedItemResponse<User>> {
-  let lastItem = event.lastItem ? User.fromJson(JSON.stringify(event.lastItem)) : null;
+  let lastItem = event.lastItem
+    ? User.fromJson(JSON.stringify(event.lastItem))
+    : null;
   let authToken = AuthToken.fromJson(JSON.stringify(event.authToken));
   let user = User.fromJson(JSON.stringify(event.user));
   let pageSize = event.pageSize;

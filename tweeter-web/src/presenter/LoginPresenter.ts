@@ -1,7 +1,9 @@
-import { AuthenticatedPresenter, AuthenticatedView } from "./AuthenticatedPresenter";
+import {
+  AuthenticatedPresenter,
+  AuthenticatedView,
+} from "./AuthenticatedPresenter";
 
 export class LoginPresenter extends AuthenticatedPresenter {
-
   public constructor(view: AuthenticatedView) {
     super(view);
   }

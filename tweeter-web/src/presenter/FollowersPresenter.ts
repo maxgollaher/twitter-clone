@@ -1,6 +1,6 @@
 import { AuthToken, User } from "tweeter-shared";
-import { UserItemPresenter } from "./UserItemPresenter";
 import { PAGE_SIZE, PagedItemView } from "./PagedItemPresenter";
+import { UserItemPresenter } from "./UserItemPresenter";
 
 export class FollowersPresenter extends UserItemPresenter {
   public constructor(view: PagedItemView<User>) {

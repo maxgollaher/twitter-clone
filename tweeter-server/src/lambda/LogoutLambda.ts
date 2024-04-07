@@ -1,12 +1,12 @@
-import { AuthToken, LogoutRequest } from "tweeter-shared";
+import { LogoutRequest } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 
 export async function handler(event: LogoutRequest): Promise<void> {
-  let authToken = AuthToken.fromJson(JSON.stringify(event.authToken));
+  let request = LogoutRequest.fromJson(JSON.stringify(event));
 
-  if (!authToken) {
+  if (!request || !request.authToken) {
     throw new Error("[Bad Request] Missing required fields.");
   }
 
-  await new UserService().logout(authToken!);
+  await new UserService().logout(request.authToken);
 }

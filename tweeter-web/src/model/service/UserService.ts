@@ -1,15 +1,15 @@
+import { Buffer } from "buffer";
 import {
   AuthToken,
-  User,
-  LoginRequest,
-  RegisterRequest,
-  LogoutRequest,
-  GetUserRequest,
-  GetUserInfoRequest,
-  GetIsFollowerRequest,
   FollowRequest,
+  GetIsFollowerRequest,
+  GetUserInfoRequest,
+  GetUserRequest,
+  LoginRequest,
+  LogoutRequest,
+  RegisterRequest,
+  User,
 } from "tweeter-shared";
-import { Buffer } from "buffer";
 import { ServerFacade } from "../net/ServerFacade";
 
 export class UserService {

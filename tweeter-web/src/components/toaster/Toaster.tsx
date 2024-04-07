@@ -1,7 +1,7 @@
-import "./Toaster.css";
 import { useEffect } from "react";
 import { Toast } from "react-bootstrap";
 import useToaster from "./ToastHook";
+import "./Toaster.css";
 
 interface Props {
   position: string;

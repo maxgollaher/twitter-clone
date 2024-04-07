@@ -8,7 +8,7 @@ export class ClientCommunicator {
 
   async doPost<T extends TweeterRequest>(
     req: T,
-    endpoint: string,
+    endpoint: string
   ): Promise<JSON> {
     const url = this.SERVER_URL + endpoint;
     const request = {

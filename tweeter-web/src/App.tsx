@@ -1,4 +1,3 @@
-import "./App.css";
 import {
   BrowserRouter,
   Navigate,
@@ -6,22 +5,23 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
+import { Status, User } from "tweeter-shared";
+import "./App.css";
 import Login from "./components/authentication/login/Login";
 import Register from "./components/authentication/register/Register";
+import ItemScroller from "./components/mainLayout/ItemScroller";
 import MainLayout from "./components/mainLayout/MainLayout";
+import StatusItem from "./components/statusItem/StatusItem";
 import Toaster from "./components/toaster/Toaster";
 import useUserInfo from "./components/userInfo/UserInfoHook";
-import { FollowingPresenter } from "./presenter/FollowingPresenter";
-import { FollowersPresenter } from "./presenter/FollowersPresenter";
-import { FeedPresenter } from "./presenter/FeedPresenter";
-import { StoryPresenter } from "./presenter/StoryPresenter";
-import ItemScroller from "./components/mainLayout/ItemScroller";
-import { StatusService } from "./model/service/StatusService";
-import { Status, User } from "tweeter-shared";
-import StatusItem from "./components/statusItem/StatusItem";
 import UserItem from "./components/userItem/UserItem";
 import { FollowService } from "./model/service/FollowService";
+import { StatusService } from "./model/service/StatusService";
+import { FeedPresenter } from "./presenter/FeedPresenter";
+import { FollowersPresenter } from "./presenter/FollowersPresenter";
+import { FollowingPresenter } from "./presenter/FollowingPresenter";
 import { PagedItemView } from "./presenter/PagedItemPresenter";
+import { StoryPresenter } from "./presenter/StoryPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();

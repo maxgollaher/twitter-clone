@@ -1,20 +1,17 @@
+import { PostStatusRequest, PostStatusResponse } from "tweeter-shared";
 import { StatusService } from "../model/service/StatusService";
-import {
-  AuthToken,
-  PostStatusRequest,
-  PostStatusResponse,
-  Status,
-} from "tweeter-shared";
 
 export async function handler(
   event: PostStatusRequest
 ): Promise<PostStatusResponse> {
-  let authToken = AuthToken.fromJson(JSON.stringify(event.authToken));
-  let status = Status.fromJson(JSON.stringify(event.status));
+  let request = PostStatusRequest.fromJson(JSON.stringify(event));
 
-  if (!authToken || !status) {
+  if (!request || !request.authToken || !request.status) {
     throw new Error("[Bad Request] Missing required fields.");
   }
 
-  return await new StatusService().postStatus(event.authToken, event.status);
+  return await new StatusService().postStatus(
+    request.authToken,
+    request.status
+  );
 }

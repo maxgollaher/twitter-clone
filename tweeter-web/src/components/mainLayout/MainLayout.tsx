@@ -1,12 +1,12 @@
-import "./MainLayout.css";
 import { Outlet } from "react-router-dom";
-import AppNavbar from "../appNavbar/AppNavbar";
-import PostStatus from "../postStatus/PostStatus";
-import UserInfo from "../userInfo/UserInfo";
 import {
   UserInfoPresenter,
   UserInfoView,
 } from "../../presenter/UserInfoPresenter";
+import AppNavbar from "../appNavbar/AppNavbar";
+import PostStatus from "../postStatus/PostStatus";
+import UserInfo from "../userInfo/UserInfo";
+import "./MainLayout.css";
 
 const MainLayout = () => {
   return (

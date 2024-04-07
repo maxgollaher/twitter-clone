@@ -13,8 +13,8 @@ export class UserDTO {
     lastName: string,
     alias: string,
     imageUrl: string,
-    password: string,    
-    salt?: string | undefined,
+    password: string,
+    salt?: string | undefined
   ) {
     this.firstName = firstName;
     this.lastName = lastName;

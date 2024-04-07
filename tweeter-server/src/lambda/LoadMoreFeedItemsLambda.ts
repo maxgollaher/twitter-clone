@@ -1,8 +1,8 @@
 import {
-  LoadPagedItemRequest,
-  Status,
-  LoadPagedItemResponse,
   AuthToken,
+  LoadPagedItemRequest,
+  LoadPagedItemResponse,
+  Status,
   User,
 } from "tweeter-shared";
 import { StatusService } from "../model/service/StatusService";
@@ -12,7 +12,9 @@ export async function handler(
 ): Promise<LoadPagedItemResponse<Status>> {
   event = JSON.parse(JSON.stringify(event));
 
-  let lastItem = event.lastItem ? Status.fromJson(JSON.stringify(event.lastItem)) : null;
+  let lastItem = event.lastItem
+    ? Status.fromJson(JSON.stringify(event.lastItem))
+    : null;
   let authToken = AuthToken.fromJson(JSON.stringify(event.authToken));
   let user = User.fromJson(JSON.stringify(event.user));
   let pageSize = event.pageSize;

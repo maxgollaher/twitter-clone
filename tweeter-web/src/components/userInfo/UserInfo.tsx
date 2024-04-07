@@ -1,10 +1,10 @@
-import "./UserInfo.css";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthToken, User } from "tweeter-shared";
-import useToastListener from "../toaster/ToastListenerHook";
-import useUserInfo from "./UserInfoHook";
 import { UserInfoPresenter, UserInfoView } from "../../presenter/UserInfoPresenter";
+import useToastListener from "../toaster/ToastListenerHook";
+import "./UserInfo.css";
+import useUserInfo from "./UserInfoHook";
 
 interface Props {
   presenterGenerator: (view: UserInfoView) => UserInfoPresenter;

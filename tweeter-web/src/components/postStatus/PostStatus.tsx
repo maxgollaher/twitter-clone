@@ -1,8 +1,8 @@
-import "./PostStatus.css";
 import { useState } from "react";
+import { PostStatusPresenter, PostStatusView } from "../../presenter/PostStatusPresenter";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
-import { PostStatusView, PostStatusPresenter } from "../../presenter/PostStatusPresenter";
+import "./PostStatus.css";
 
 interface Props {
   presenter?: PostStatusPresenter;

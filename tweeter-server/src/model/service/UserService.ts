@@ -1,16 +1,16 @@
-import { User, AuthToken } from "tweeter-shared";
-import { UserDTO } from "../../entity/UserDTO";
 import {
   ObjectCannedACL,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import { AuthToken, User } from "tweeter-shared";
 import { IDao } from "../../dataAccess/DaoFactory";
 import { AuthTokenDTO } from "../../entity/AuthTokenDTO";
+import { UserDTO } from "../../entity/UserDTO";
 
 import CryptoJS from "crypto-js";
-import { Follower } from "../../entity/Follower";
 import { PaginatedDao } from "../../dataAccess/FollowsDao";
+import { Follower } from "../../entity/Follower";
 import { AuthService } from "./AuthService";
 
 const BUCKET = "max-gollaher-tweeter";
@@ -39,10 +39,9 @@ export class UserService extends AuthService {
     password: string,
     userImageBytes: string
   ): Promise<[User, AuthToken]> {
-
     // Check if the alias is already taken
     let existingUser = await UserService.userDao.getItem(alias);
-    if (!existingUser) {
+    if (existingUser) {
       throw new Error("[Bad Request] Alias already taken.");
     }
 

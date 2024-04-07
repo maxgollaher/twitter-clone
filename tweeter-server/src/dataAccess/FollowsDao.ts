@@ -1,3 +1,4 @@
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   DeleteCommand,
   DynamoDBDocumentClient,
@@ -7,9 +8,8 @@ import {
   ScanCommand,
   UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { Follower } from "../entity/Follower";
 import { DataPage } from "../entity/DataPage";
+import { Follower } from "../entity/Follower";
 import { IDao } from "./DaoFactory";
 
 export interface PaginatedDao extends IDao {
@@ -268,23 +268,23 @@ export class FollowsDao implements PaginatedDao {
     };
     const items: Follower[] = [];
 
-   try {
-     const data = await this.client.send(new QueryCommand(params));
-     const hasMorePages = data.LastEvaluatedKey !== undefined;
-     data.Items?.forEach((item) => {
-       items.push(
-         new Follower(
-           item[this.followerAttr],
-           item[this.followerNameAttr],
-           item[this.followeeAttr],
-           item[this.followeeNameAttr]
-         )
-       );
-     });
-     return new DataPage<Follower>(items, hasMorePages);
-   } catch (error) {
-    throw new Error("[InternalServerError]" + error);
-   }
+    try {
+      const data = await this.client.send(new QueryCommand(params));
+      const hasMorePages = data.LastEvaluatedKey !== undefined;
+      data.Items?.forEach((item) => {
+        items.push(
+          new Follower(
+            item[this.followerAttr],
+            item[this.followerNameAttr],
+            item[this.followeeAttr],
+            item[this.followeeNameAttr]
+          )
+        );
+      });
+      return new DataPage<Follower>(items, hasMorePages);
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
   }
 
   private generateFollowerItem(follower: Follower) {

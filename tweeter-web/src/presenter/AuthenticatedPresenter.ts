@@ -1,6 +1,6 @@
-import { User, AuthToken } from "tweeter-shared";
-import { Presenter, View } from "./Presenter";
+import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
+import { Presenter, View } from "./Presenter";
 
 export interface AuthenticatedView extends View {
   updateUserInfo: (
@@ -23,7 +23,7 @@ export abstract class AuthenticatedPresenter extends Presenter {
     return this._service;
   }
 
-  protected get view(): AuthenticatedView { 
+  protected get view(): AuthenticatedView {
     return super.view as AuthenticatedView;
   }
 

@@ -1,17 +1,10 @@
+import { anything, instance, mock, spy, verify, when } from "ts-mockito";
 import { AuthToken } from "tweeter-shared";
+import { UserService } from "../../src/model/service/UserService";
 import {
   AppNavbarPresenter,
   AppNavbarView,
 } from "../../src/presenter/AppNavbarPresenter";
-import {
-  anything,
-  instance,
-  mock,
-  spy,
-  verify,
-  when,
-} from "ts-mockito";
-import { UserService } from "../../src/model/service/UserService";
 
 describe("AppNavbarPresenter", () => {
   let mockAppNavbarPresenterView: AppNavbarView;

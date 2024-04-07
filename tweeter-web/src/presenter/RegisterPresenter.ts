@@ -1,6 +1,9 @@
 import { Buffer } from "buffer";
 import { ChangeEvent } from "react";
-import { AuthenticatedPresenter, AuthenticatedView } from "./AuthenticatedPresenter";
+import {
+  AuthenticatedPresenter,
+  AuthenticatedView,
+} from "./AuthenticatedPresenter";
 
 export interface RegisterView extends AuthenticatedView {
   setImageUrl: (url: string) => void;
@@ -8,7 +11,6 @@ export interface RegisterView extends AuthenticatedView {
 }
 
 export class RegisterPresenter extends AuthenticatedPresenter {
-
   public constructor(view: RegisterView) {
     super(view);
   }

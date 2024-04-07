@@ -73,7 +73,7 @@ export class FakeData {
     if (this.fakeUsers !== this.fakeUsers) {
       // Verify that this.fakeUsers always returns the same list of users (this could be violated by mock implementations of fakeUsers)
       throw new Error(
-        "fakeUsers should return the same list of fake users each time it's called",
+        "fakeUsers should return the same list of fake users each time it's called"
       );
     }
 
@@ -85,7 +85,7 @@ export class FakeData {
     if (this.fakeStatuses !== this.fakeStatuses) {
       // Verify that this.fakeStatuses always returns the same list of users (this could be violated by mock implementations of fakeStatuses)
       throw new Error(
-        "fakeStatuses should return the same list of fake statuses each time it's called",
+        "fakeStatuses should return the same list of fake statuses each time it's called"
       );
     }
   }
@@ -165,10 +165,10 @@ export class FakeData {
   public getPageOfUsers(
     lastUser: User | null,
     limit: number,
-    omit: User | null,
+    omit: User | null
   ): [User[], boolean] {
     let userIndex = 0;
-    
+
     // Find the index of the first user to be returned
     if (lastUser ?? false) {
       for (let i = 0; i < this.fakeUsers.length; i++) {
@@ -204,7 +204,7 @@ export class FakeData {
    */
   public getPageOfStatuses(
     lastStatus: Status | null,
-    limit: number,
+    limit: number
   ): [Status[], boolean] {
     let statusIndex = 0;
 

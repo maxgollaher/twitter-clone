@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { PagedItemPresenter, PagedItemView } from "../../presenter/PagedItemPresenter";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
-import { PagedItemPresenter, PagedItemView } from "../../presenter/PagedItemPresenter";
 
 interface Props<Item, Service> {
     presenterGenerator: (view: PagedItemView<Item>) => PagedItemPresenter<Item, Service>;

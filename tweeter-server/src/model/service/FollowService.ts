@@ -1,15 +1,14 @@
 import { AuthToken, User } from "tweeter-shared";
-import { Follower } from "../../entity/Follower";
-import { DataPage } from "../../entity/DataPage";
-import { UserDTO } from "../../entity/UserDTO";
 import { IDao } from "../../dataAccess/DaoFactory";
 import { PaginatedDao } from "../../dataAccess/FollowsDao";
+import { DataPage } from "../../entity/DataPage";
+import { Follower } from "../../entity/Follower";
+import { UserDTO } from "../../entity/UserDTO";
 import { AuthService } from "./AuthService";
 
 export class FollowService extends AuthService {
   private static userDao: IDao = FollowService.db.users;
-  private static followsDao: PaginatedDao =
-    FollowService.db.follows;
+  private static followsDao: PaginatedDao = FollowService.db.follows;
 
   public async loadMoreFollowers(
     authToken: AuthToken,

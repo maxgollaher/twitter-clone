@@ -1,12 +1,12 @@
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   DeleteCommand,
   DynamoDBDocumentClient,
   GetCommand,
   PutCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { IDao } from "./DaoFactory";
 import { AuthTokenDTO } from "../entity/AuthTokenDTO";
+import { IDao } from "./DaoFactory";
 
 export class AuthTokenDao implements IDao {
   readonly tableName = "tokens";
@@ -65,12 +65,6 @@ export class AuthTokenDao implements IDao {
     }
   }
 
-  private generateTokenItem(token: string) {
-    return {
-      [this.primaryKey]: token,
-    };
-  }
-
   /**
    * Deletes a token from the database
    * @param token - the token to delete
@@ -87,5 +81,11 @@ export class AuthTokenDao implements IDao {
     } catch (error) {
       throw new Error("[InternalServerError]" + error);
     }
+  }
+
+  private generateTokenItem(token: string) {
+    return {
+      [this.primaryKey]: token,
+    };
   }
 }

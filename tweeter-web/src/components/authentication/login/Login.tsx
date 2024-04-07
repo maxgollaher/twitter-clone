@@ -1,15 +1,15 @@
-import "./Login.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthenticationFormLayout from "../AuthenticationFormLayout";
-import useToastListener from "../../toaster/ToastListenerHook";
-import AuthenticationFields from "../AuthenticationFields";
-import useUserInfo from "../../userInfo/UserInfoHook";
+import { AuthToken, User } from "tweeter-shared";
 import {
   LoginPresenter
 } from "../../../presenter/LoginPresenter";
-import { User, AuthToken } from "tweeter-shared";
+import useToastListener from "../../toaster/ToastListenerHook";
+import useUserInfo from "../../userInfo/UserInfoHook";
+import AuthenticationFields from "../AuthenticationFields";
+import AuthenticationFormLayout from "../AuthenticationFormLayout";
+import "./Login.css";
 
 interface Props {
   originalUrl?: string;

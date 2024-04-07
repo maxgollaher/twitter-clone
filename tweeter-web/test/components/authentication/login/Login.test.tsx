@@ -1,13 +1,13 @@
-import React from "react";
-import Login from "../../../../src/components/authentication/login/Login";
-import { MemoryRouter } from "react-router-dom";
-import userEvent from "@testing-library/user-event";
-import { render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
-import { LoginPresenter } from "../../../../src/presenter/LoginPresenter";
+import "@testing-library/jest-dom";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import React from "react";
+import { MemoryRouter } from "react-router-dom";
 import { instance, mock, verify } from "ts-mockito";
+import Login from "../../../../src/components/authentication/login/Login";
+import { LoginPresenter } from "../../../../src/presenter/LoginPresenter";
 
 library.add(fab);
 

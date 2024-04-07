@@ -1,5 +1,3 @@
-import { AuthToken } from "tweeter-shared";
-
 export class AuthTokenDTO {
   token: string;
   timestamp: number;

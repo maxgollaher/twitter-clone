@@ -1,19 +1,15 @@
-import { AuthToken, User, Status } from "tweeter-shared";
-import { DataPage } from "../../entity/DataPage";
-import { StatusDTO } from "../../entity/StatusDTO";
-import { Follower } from "../../entity/Follower";
-import { PostStatusResponse } from "tweeter-shared";
+import { AuthToken, PostStatusResponse, Status, User } from "tweeter-shared";
 import { PaginatedDao } from "../../dataAccess/FollowsDao";
 import { PaginatedFeedDao } from "../../dataAccess/StatusDao";
+import { DataPage } from "../../entity/DataPage";
+import { Follower } from "../../entity/Follower";
+import { StatusDTO } from "../../entity/StatusDTO";
 import { AuthService } from "./AuthService";
 
 export class StatusService extends AuthService {
-  private static followsDao: PaginatedDao =
-    StatusService.db.follows;
-  private static feedDao: PaginatedFeedDao =
-    StatusService.db.feed;
-  private static storyDao: PaginatedFeedDao =
-    StatusService.db.story;
+  private static followsDao: PaginatedDao = StatusService.db.follows;
+  private static feedDao: PaginatedFeedDao = StatusService.db.feed;
+  private static storyDao: PaginatedFeedDao = StatusService.db.story;
 
   public async loadMoreFeedItems(
     authToken: AuthToken,
@@ -69,7 +65,11 @@ export class StatusService extends AuthService {
     }
 
     // Add the status to the user's own story
-    let statusDTO = new StatusDTO(newStatus.user.alias, newStatus.timestamp, newStatus);
+    let statusDTO = new StatusDTO(
+      newStatus.user.alias,
+      newStatus.timestamp,
+      newStatus
+    );
     await StatusService.storyDao.putItem(statusDTO);
 
     return new PostStatusResponse(true);

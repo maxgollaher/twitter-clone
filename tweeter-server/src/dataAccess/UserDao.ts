@@ -1,12 +1,12 @@
-import { UserDTO } from "../entity/UserDTO";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   DeleteCommand,
   DynamoDBDocumentClient,
   GetCommand,
   PutCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import CryptoJS from "crypto-js";
+import { UserDTO } from "../entity/UserDTO";
 import { IDao } from "./DaoFactory";
 
 export class UserDao implements IDao {

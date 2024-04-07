@@ -1,17 +1,17 @@
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
-  PutCommand,
-  GetCommand,
   DeleteCommand,
-  UpdateCommand,
   DynamoDBDocumentClient,
-  ScanCommand,
+  GetCommand,
+  PutCommand,
   QueryCommand,
+  ScanCommand,
+  UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { Status } from "tweeter-shared";
+import { DataPage } from "../entity/DataPage";
 import { StatusDTO } from "../entity/StatusDTO";
 import { IDao } from "./DaoFactory";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DataPage } from "../entity/DataPage";
 
 export interface PaginatedFeedDao extends IDao {
   getPageOfFeed(

@@ -1,14 +1,14 @@
-import {
-  RegisterRequest,
-  GetUserInfoRequest,
-  User,
-  LoadPagedItemRequest,
-  AuthToken,
-} from "tweeter-shared";
 import "isomorphic-fetch";
 import { instance, mock } from "ts-mockito";
-import { ServerFacade } from "../../../src/model/net/ServerFacade";
+import {
+  AuthToken,
+  GetUserInfoRequest,
+  LoadPagedItemRequest,
+  RegisterRequest,
+  User,
+} from "tweeter-shared";
 import { ClientCommunicator } from "../../../src/model/net/ClientCommunicator";
+import { ServerFacade } from "../../../src/model/net/ServerFacade";
 
 describe("ServerFacade", () => {
   let serverFacade: ServerFacade;
@@ -41,9 +41,10 @@ describe("ServerFacade", () => {
     );
 
     let response = await serverFacade.register(request);
-    expect(response.user.alias).toEqual(user.alias);
-    expect(response.user.firstName).toEqual(user.firstName);
-    expect(response.user.lastName).toEqual(user.lastName);
+    expect(response).not.toBeNull();
+    expect(response!.user!.alias).toEqual(user.alias);
+    expect(response!.user!.firstName).toEqual(user.firstName);
+    expect(response!.user!.lastName).toEqual(user.lastName);
   });
 
   it("should get followers of a user", async () => {

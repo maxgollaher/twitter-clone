@@ -64,7 +64,9 @@ export class AuthenticateResponse extends TweeterResponse {
     if (deserializedUser === null) {
       throw new Error(
         "AuthenticateResponse, could not deserialize user with json:\n" +
-          JSON.stringify(jsonObject._user) + " " + JSON.stringify(jsonObject)
+          JSON.stringify(jsonObject._user) +
+          " " +
+          JSON.stringify(jsonObject)
       );
     }
 
@@ -219,7 +221,10 @@ export class LoadPagedItemResponse<T> extends TweeterResponse {
     return this._hasMorePages;
   }
 
-  static fromJson<T>(json: JSON,  deserializer: Deserializer<T>): LoadPagedItemResponse<T> {
+  static fromJson<T>(
+    json: JSON,
+    deserializer: Deserializer<T>
+  ): LoadPagedItemResponse<T> {
     interface LoadPagedItemResponseJson extends ResponseJson {
       _items: any[];
       _hasMorePages: boolean;
@@ -241,11 +246,7 @@ export class LoadPagedItemResponse<T> extends TweeterResponse {
       newItems.push(deserializedItem);
     }
 
-
-    return new LoadPagedItemResponse<T>(
-      newItems,
-      jsonObject._hasMorePages
-    );
+    return new LoadPagedItemResponse<T>(newItems, jsonObject._hasMorePages);
   }
 }
 
@@ -261,9 +262,7 @@ export class StatusDeserializer implements Deserializer<Status> {
   }
 }
 
-
 export class PostStatusResponse extends TweeterResponse {
-
   constructor(success: boolean) {
     super();
     this._success = success;

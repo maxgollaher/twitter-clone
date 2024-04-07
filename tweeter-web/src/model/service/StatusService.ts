@@ -1,12 +1,12 @@
 import {
   AuthToken,
-  User,
-  Status,
   LoadPagedItemRequest,
   PostStatusRequest,
+  PostStatusResponse,
+  Status,
+  User,
 } from "tweeter-shared";
 import { ServerFacade } from "../net/ServerFacade";
-import { PostStatusResponse } from "tweeter-shared";
 
 export class StatusService {
   private _serverFacade: ServerFacade;

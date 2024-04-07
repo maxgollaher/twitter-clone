@@ -1,28 +1,26 @@
 import {
   AuthenticateResponse,
-  LoginRequest,
-  RegisterRequest,
-  LogoutRequest,
   FollowRequest,
+  FollowResponse,
   GetIsFollowerRequest,
   GetIsFollowerResponse,
   GetUserInfoRequest,
   GetUserInfoResponse,
   GetUserRequest,
   GetUserResponse,
-  FollowResponse,
+  LoadPagedItemRequest,
+  LoadPagedItemResponse,
+  LoginRequest,
+  LogoutRequest,
   PostStatusRequest,
-  PostStatusResponse
+  PostStatusResponse,
+  RegisterRequest,
+  Status,
+  StatusDeserializer,
+  User,
+  UserDeserializer,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
-import {
-  LoadPagedItemRequest,
-  User,
-  LoadPagedItemResponse,
-  Status,
-  UserDeserializer,
-  StatusDeserializer,
-} from "tweeter-shared";
 
 export class ServerFacade {
   private SERVER_URL =
@@ -52,10 +50,8 @@ export class ServerFacade {
 
   async register(request: RegisterRequest): Promise<AuthenticateResponse> {
     const endpoint = "/service/register";
-    const response: JSON = await this.clientCommunicator.doPost<RegisterRequest>(
-      request,
-      endpoint
-    );
+    const response: JSON =
+      await this.clientCommunicator.doPost<RegisterRequest>(request, endpoint);
 
     return AuthenticateResponse.fromJson(response);
   }
@@ -142,7 +138,10 @@ export class ServerFacade {
       LoadPagedItemRequest<User>
     >(request, endpoint);
 
-    return LoadPagedItemResponse.fromJson<User>(response, this._userDeserializer);
+    return LoadPagedItemResponse.fromJson<User>(
+      response,
+      this._userDeserializer
+    );
   }
 
   async loadMoreFollowers(
@@ -153,7 +152,10 @@ export class ServerFacade {
       LoadPagedItemRequest<User>
     >(request, endpoint);
 
-    return LoadPagedItemResponse.fromJson<User>(response, this._userDeserializer);
+    return LoadPagedItemResponse.fromJson<User>(
+      response,
+      this._userDeserializer
+    );
   }
 
   async loadMoreFeedItems(
@@ -164,7 +166,10 @@ export class ServerFacade {
       LoadPagedItemRequest<Status>
     >(request, endpoint);
 
-    return LoadPagedItemResponse.fromJson<Status>(response, this._statusDeserializer);
+    return LoadPagedItemResponse.fromJson<Status>(
+      response,
+      this._statusDeserializer
+    );
   }
 
   async loadMoreStoryItems(
@@ -175,15 +180,19 @@ export class ServerFacade {
       LoadPagedItemRequest<Status>
     >(request, endpoint);
 
-    return LoadPagedItemResponse.fromJson<Status>(response, this._statusDeserializer);
+    return LoadPagedItemResponse.fromJson<Status>(
+      response,
+      this._statusDeserializer
+    );
   }
 
   async postStatus(request: PostStatusRequest): Promise<PostStatusResponse> {
     const endpoint = "/feed/postStatus";
-    const response: JSON = await this.clientCommunicator.doPost<PostStatusRequest>(
-      request,
-      endpoint
-    );
+    const response: JSON =
+      await this.clientCommunicator.doPost<PostStatusRequest>(
+        request,
+        endpoint
+      );
     return PostStatusResponse.fromJson(response);
   }
 }
