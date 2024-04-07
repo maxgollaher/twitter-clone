@@ -1,6 +1,6 @@
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
-import { MessageView, Presenter, View } from "./Presenter";
+import { MessageView, Presenter } from "./Presenter";
 
 export interface UserInfoView extends MessageView {
   setIsFollower: (isFollower: boolean) => void;
@@ -27,7 +27,7 @@ export class UserInfoPresenter extends Presenter {
     displayedUser: User
   ) {
     this.doFailureReportingOperation(async () => {
-      if (currentUser === displayedUser) {
+      if (currentUser.alias === displayedUser.alias) {
         this.view.setIsFollower(false);
       } else {
         this.view.setIsFollower(

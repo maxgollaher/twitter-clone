@@ -26,13 +26,9 @@ const UserInfo = (props: Props) => {
 
   useEffect(() => {
     setIsFollowerStatus(authToken!, currentUser!, displayedUser!);
-  }, []);
-
-  useEffect(() => {
     setNumbFollowees(authToken!, displayedUser!);
     setNumbFollowers(authToken!, displayedUser!);
-  }, []);
-
+  }, [displayedUser]);
 
   const listener: UserInfoView = {
     setIsFollower: setIsFollower,

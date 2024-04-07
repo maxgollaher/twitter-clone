@@ -78,6 +78,15 @@ export class GetIsFollowerRequest extends TweeterRequest {
     this.user = user;
     this.selectedUser = selectedUser;
   }
+
+  static fromJson(json: string | null | undefined): GetIsFollowerRequest | null {
+    if (json!!) {
+      let obj = JSON.parse(json);
+      return new GetIsFollowerRequest(obj.authToken, obj.user, obj.selectedUser);
+    } else {
+      return null;
+    }
+  }
 }
 
 export class GetUserInfoRequest extends TweeterRequest {
@@ -130,5 +139,14 @@ export class PostStatusRequest extends TweeterRequest {
     super();
     this.authToken = authToken;
     this.status = status;
+  }
+
+  static fromJson(json: string | null | undefined): PostStatusRequest | null {
+    if (json!!) {
+      let obj = JSON.parse(json);
+      return new PostStatusRequest(obj.authToken, Status.fromJson(obj.status)!);
+    } else {
+      return null;
+    }
   }
 }

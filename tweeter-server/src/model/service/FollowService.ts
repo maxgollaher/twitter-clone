@@ -1,13 +1,15 @@
 import { AuthToken, User } from "tweeter-shared";
-import { FollowsDao } from "../../dataAccess/FollowsDao";
 import { Follower } from "../../entity/Follower";
 import { DataPage } from "../../entity/DataPage";
-import { UserDao } from "../../dataAccess/UserDao";
 import { UserDTO } from "../../entity/UserDTO";
+import { IDao } from "../../dataAccess/DaoFactory";
+import { PaginatedDao } from "../../dataAccess/FollowsDao";
+import { AuthService } from "./AuthService";
 
-export class FollowService {
-  private static followsDao: FollowsDao = new FollowsDao();
-  private static userDao: UserDao = new UserDao();
+export class FollowService extends AuthService {
+  private static userDao: IDao = FollowService.DaoFactory.getUserDao();
+  private static followsDao: PaginatedDao =
+    FollowService.DaoFactory.getFollowsDao();
 
   public async loadMoreFollowers(
     authToken: AuthToken,
@@ -15,6 +17,8 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
+    this.verifyAuthToken(authToken);
+
     let alias = JSON.parse(JSON.stringify(user))._alias;
     let response: DataPage<Follower> =
       await FollowService.followsDao.getPageOfFollowers(
@@ -25,7 +29,7 @@ export class FollowService {
 
     let userPromises: Promise<User | null>[] = response.values.map(
       async (follower) => {
-        let foundUser: UserDTO | null = await FollowService.userDao.getUser(
+        let foundUser: UserDTO | null = await FollowService.userDao.getItem(
           follower.followee_handle
         );
         return foundUser ? foundUser.toUser() : null;
@@ -44,6 +48,8 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
+    this.verifyAuthToken(authToken);
+
     let alias = JSON.parse(JSON.stringify(user))._alias;
     let response: DataPage<Follower> =
       await FollowService.followsDao.getPageOfFollowees(
@@ -54,7 +60,7 @@ export class FollowService {
 
     let userPromises: Promise<User | null>[] = response.values.map(
       async (followee) => {
-        let foundUser: UserDTO | null = await FollowService.userDao.getUser(
+        let foundUser: UserDTO | null = await FollowService.userDao.getItem(
           followee.follower_handle
         );
         return foundUser ? foundUser.toUser() : null;

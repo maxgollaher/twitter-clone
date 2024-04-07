@@ -75,11 +75,7 @@ export class UserService {
     user: User,
     selectedUser: User
   ): Promise<boolean> {
-    let request = new GetIsFollowerRequest(
-      authToken,
-      user,
-      selectedUser
-    );
+    let request = new GetIsFollowerRequest(authToken, user, selectedUser);
     let response = await this._serverFacade.getIsFollowerStatus(request);
     return response.isFollower;
   }

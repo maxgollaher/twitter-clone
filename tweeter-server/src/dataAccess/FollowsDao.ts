@@ -10,8 +10,35 @@ import {
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { Follower } from "../entity/Follower";
 import { DataPage } from "../entity/DataPage";
+import { IDao } from "./DaoFactory";
 
-export class FollowsDao {
+export interface PaginatedDao extends IDao {
+  getAllItems(key: string, attrName: string): Promise<any[]>;
+  getCount(key: any, attrName: any): Promise<number>;
+  getPageOfFollowees(
+    followerHandle: string,
+    pageSize: number,
+    lastFolloweeHandle: string | undefined
+  ): Promise<any>;
+  getPageOfFollowers(
+    followeeHandle: string,
+    pageSize: number,
+    lastFollowerHandle: string | undefined
+  ): Promise<any>;
+}
+
+/**
+ * Data access object for the follows table
+ * The follows table stores the follower-followee relationships
+ * between users
+ *
+ * The table has the following attributes:
+ * - follower_handle: the handle of the follower
+ * - follower_name: the name of the follower
+ * - followee_handle: the handle of the followee
+ * - followee_name: the name of the followee
+ */
+export class FollowsDao implements PaginatedDao {
   readonly tableName = "follows";
   readonly followerAttr = "follower_handle";
   readonly followerNameAttr = "follower_name";
@@ -20,7 +47,11 @@ export class FollowsDao {
 
   private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
-  async putFollower(follower: Follower): Promise<void> {
+  /**
+   * Puts a follower relationship in the database
+   * @param follower - the follower to put in the database
+   */
+  async putItem(follower: Follower): Promise<void> {
     const params = {
       TableName: this.tableName,
       Item: {
@@ -31,10 +62,15 @@ export class FollowsDao {
       },
     };
     await this.client.send(new PutCommand(params));
-    console.log(`Put follower: ${follower.toString()}`);
   }
 
-  async getFollower(follower: Follower): Promise<Follower | undefined> {
+  /**
+   * Gets a follower relationship from the database
+   * @param follower - the follower to get from the database
+   * @returns the follower or undefined if the follower is not found
+   *          in the database
+   */
+  async getItem(follower: Follower): Promise<Follower | undefined> {
     const params = {
       TableName: this.tableName,
       Key: this.generateFollowerItem(follower),
@@ -50,9 +86,13 @@ export class FollowsDao {
         );
   }
 
-  async updateFollower(follower: Follower): Promise<void> {
+  /**
+   * Updates a follower relationship in the database
+   * @param follower - the follower to update in the database
+   */
+  async updateItem(follower: Follower): Promise<void> {
     const params = {
-      TableName: "follows",
+      TableName: this.tableName,
       Key: this.generateFollowerItem(follower),
       UpdateExpression: "SET follower_name = :fn, followee_name = :en",
       ExpressionAttributeValues: {
@@ -64,18 +104,56 @@ export class FollowsDao {
     await this.client.send(new UpdateCommand(params));
   }
 
-  async deleteFollower(follower: Follower): Promise<void> {
+  /**
+   * Deletes a follower relationship from the database
+   * @param follower - the follower to delete from the database
+   */
+  async deleteItem(follower: Follower): Promise<void> {
     const params = {
       TableName: this.tableName,
       Key: this.generateFollowerItem(follower),
     };
     await this.client.send(new DeleteCommand(params));
-    console.log(`Deleted follower: ${follower.toString()}`);
   }
 
-  async getAllFollowers(): Promise<Follower[]> {
+  async getCount(key: any, attrName: any): Promise<number> {
     const params = {
       TableName: this.tableName,
+      FilterExpression: "#attr = :name",
+      ExpressionAttributeNames: {
+        "#attr": attrName,
+      },
+      ExpressionAttributeValues: {
+        ":name": key,
+      },
+    };
+
+    try {
+      const output = await this.client.send(new ScanCommand(params));
+      const count = output.Items ? output.Items.length : 0;
+      return count;
+    } catch (error) {
+      console.error("Error scanning the table:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Gets all the follower relationships from the database
+   * @param key - the key to query on
+   * @param attrName - the attribute name to query on
+   * @returns a list of all the follower relationships in the database
+   */
+  async getAllItems(key: string, attrName: string): Promise<Follower[]> {
+    const params = {
+      TableName: this.tableName,
+      FilterExpression: "#attr = :name",
+      ExpressionAttributeNames: {
+        "#attr": attrName,
+      },
+      ExpressionAttributeValues: {
+        ":name": key,
+      },
     };
     const output = await this.client.send(new ScanCommand(params));
     return (output.Items || []).map(
@@ -89,13 +167,14 @@ export class FollowsDao {
     );
   }
 
-  async deleteAllFollowers(): Promise<void> {
-    const followers = await this.getAllFollowers();
-    for (const item of followers) {
-      await this.deleteFollower(item as Follower);
-    }
-  }
-
+  /**
+   * Gets a paginated group of followees for a given follower
+   *
+   * @param followerHandle - the handle of the follower
+   * @param pageSize - the number of followees to get
+   * @param lastFolloweeHandle - the handle of the last followee from the previous page
+   * @returns the paginated group of followees
+   */
   async getPageOfFollowees(
     followerHandle: string,
     pageSize: number,
@@ -133,6 +212,14 @@ export class FollowsDao {
     return new DataPage<Follower>(items, hasMorePages);
   }
 
+  /**
+   * Gets a paginated group of followers for a given followee
+   *
+   * @param followeeHandle
+   * @param pageSize
+   * @param lastFollowerHandle
+   * @returns the paginated group of followers
+   */
   async getPageOfFollowers(
     followeeHandle: string,
     pageSize: number,
