@@ -9,7 +9,7 @@ export interface IDao {
   putItem(item: any): Promise<any>;
   getItem(key: any): Promise<any>;
   deleteItem(key: any): Promise<void>;
-  updateItem?(item: any): Promise<void>;
+  updateItem(item: any): Promise<void>;
 }
 
 export interface IDaoFactory {

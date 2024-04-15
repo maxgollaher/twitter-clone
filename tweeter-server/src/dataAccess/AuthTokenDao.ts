@@ -4,6 +4,7 @@ import {
   DynamoDBDocumentClient,
   GetCommand,
   PutCommand,
+  UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { AuthTokenDTO } from "../entity/AuthTokenDTO";
 import { IDao } from "./DaoFactory";
@@ -78,6 +79,35 @@ export class AuthTokenDao implements IDao {
     };
     try {
       await this.client.send(new DeleteCommand(params));
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
+  }
+
+  /**
+   * Updates a token in the database
+   * 
+   * @param token - the token to update
+   */
+  async updateItem(token: AuthTokenDTO): Promise<void> {
+    const expiration = token.timestamp + 3600;
+    const params = {
+      TableName: this.tableName,
+      Key: this.generateTokenItem(token.token),
+      UpdateExpression: "SET #alias = :a, #timestamp = :t, #expire_time = :e",
+      ExpressionAttributeNames: {
+        "#alias": this.alias,
+        "#timestamp": this.timestamp,
+        "#expire_time": this.expireTime,
+      },
+      ExpressionAttributeValues: {
+        ":a": token.alias,
+        ":t": token.timestamp,
+        ":e": expiration,
+      },
+    };
+    try {
+      await this.client.send(new UpdateCommand(params));
     } catch (error) {
       throw new Error("[InternalServerError]" + error);
     }

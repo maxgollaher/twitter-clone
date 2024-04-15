@@ -1,5 +1,6 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
+  BatchWriteCommand,
   DeleteCommand,
   DynamoDBDocumentClient,
   GetCommand,
@@ -19,6 +20,7 @@ export interface PaginatedFeedDao extends IDao {
     pageSize: number,
     lastTimestamp: number | undefined
   ): Promise<any>;
+  batchWriteItems(items: StatusDTO[]): Promise<void>;
 }
 
 export class StatusDao implements PaginatedFeedDao {
@@ -170,6 +172,29 @@ export class StatusDao implements PaginatedFeedDao {
     } catch (error) {
       throw new Error("[InternalServerError]" + error);
     }
+  }
+
+  async batchWriteItems(items: StatusDTO[]): Promise<void> {
+    const requests = items.map((item) => {
+      return {
+        PutRequest: {
+          Item: this.generateFeedItem(item),
+        },
+      };
+    });
+
+    const params = {
+      RequestItems: {
+        [this.tableName]: requests,
+      },
+    };
+
+    try {
+      await this.client.send(new BatchWriteCommand(params));
+    } catch (error) {
+      throw new Error("[InternalServerError]" + error);
+    }
+  
   }
 }
 

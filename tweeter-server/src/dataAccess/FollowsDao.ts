@@ -1,5 +1,6 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
+  BatchWriteCommand,
   DeleteCommand,
   DynamoDBDocumentClient,
   GetCommand,
@@ -292,5 +293,34 @@ export class FollowsDao implements PaginatedDao {
       [this.followerAttr]: follower.follower_handle,
       [this.followeeAttr]: follower.followee_handle,
     };
+  }
+
+  /**
+   * Batch writes multiple users to the database
+   * @param followers - an array of Follower objects to insert
+   */
+  async batchWriteItems(followers: Follower[]): Promise<void> {
+    const items = followers.map((follower) => ({
+      PutRequest: {
+        Item: {
+          [this.followerAttr]: follower.follower_handle,
+          [this.followerNameAttr]: follower.follower_name,
+          [this.followeeAttr]: follower.followee_handle,
+          [this.followeeNameAttr]: follower.followee_name,
+        },
+      },
+    }));
+
+    const params = {
+      RequestItems: {
+        [this.tableName]: items,
+      },
+    };
+
+    try {
+      await this.client.send(new BatchWriteCommand(params));
+    } catch (error) {
+      throw new Error("[InternalServerError] " + error);
+    }
   }
 }

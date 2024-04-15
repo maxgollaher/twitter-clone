@@ -104,12 +104,8 @@ export class UserService extends AuthService {
     user: User
   ): Promise<number> {
     await this.verifyAuthToken(authToken);
-    let response = await UserService.followsDao.getCount(
-      user.alias,
-      "followee_handle"
-    );
-    console.log(`Followees count: ${response}`);
-    return response;
+    let response = await UserService.userDao.getItem(user.alias);
+    return response.following;
   }
 
   public async getFollowersCount(
@@ -117,11 +113,8 @@ export class UserService extends AuthService {
     user: User
   ): Promise<number> {
     await this.verifyAuthToken(authToken);
-    let response = await UserService.followsDao.getCount(
-      user.alias,
-      "follower_handle"
-    );
-    return response;
+    let response = await UserService.userDao.getItem(user.alias);
+    return response.followers;
   }
 
   public async follow(
@@ -135,8 +128,12 @@ export class UserService extends AuthService {
     );
 
     let user: User;
+    let userDTO: UserDTO;
+    let userToFollowDTO: UserDTO;
     try {
-      user = (await UserService.userDao.getItem(token!.alias)).toUser();
+      userDTO = (await UserService.userDao.getItem(token!.alias));
+      userToFollowDTO = (await UserService.userDao.getItem(userToFollow.alias));
+      user = userDTO.toUser();
     } catch (error) {
       throw new Error("[Not Found] User not found.");
     }
@@ -148,6 +145,11 @@ export class UserService extends AuthService {
       user.name
     );
     await UserService.followsDao.putItem(follower);
+
+    userDTO.following++;
+    userToFollowDTO.followers++;
+    await UserService.userDao.updateItem(userToFollowDTO);
+    await UserService.userDao.updateItem(userDTO);
 
     let followersCount = await this.getFollowersCount(authToken, userToFollow);
     let followeesCount = await this.getFolloweesCount(authToken, userToFollow);
@@ -163,9 +165,14 @@ export class UserService extends AuthService {
 
     let token = await UserService.authTokenDao.getItem(authToken.token);
 
+ 
     let user: User;
+    let userDTO: UserDTO;
+    let userToUnfollowDTO: UserDTO;
     try {
-      user = (await UserService.userDao.getItem(token!.alias)).toUser();
+      userDTO = (await UserService.userDao.getItem(token!.alias));
+      userToUnfollowDTO = (await UserService.userDao.getItem(userToUnfollow.alias));
+      user = userDTO.toUser();
     } catch (error) {
       throw new Error("[Not Found] User not found.");
     }
@@ -181,6 +188,12 @@ export class UserService extends AuthService {
       user.name
     );
     await UserService.followsDao.deleteItem(follower);
+
+    userDTO.following--;
+    userToUnfollowDTO.followers--;
+    await UserService.userDao.updateItem(userToUnfollowDTO)
+    await UserService.userDao.updateItem(userDTO)
+
 
     let followersCount = await this.getFollowersCount(
       authToken,
@@ -226,9 +239,13 @@ export class UserService extends AuthService {
       throw new Error("[Bad Request] User not found.");
     }
 
+    console.log("User: ", user);
+
     // Hash the provided password with the retrieved salt
     const hash = CryptoJS.SHA256(password + user.salt);
     const hashedPassword = hash.toString(CryptoJS.enc.Base64);
+    console.log("Hashed Password: ", hashedPassword)
+
 
     // Compare the hashed password with the stored hashed password
     const isPasswordValid = hashedPassword === user.password;

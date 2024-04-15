@@ -7,6 +7,8 @@ export class UserDTO {
   imageUrl: string;
   password: string;
   salt: string;
+  followers: number;
+  following: number;
 
   constructor(
     firstName: string,
@@ -14,7 +16,9 @@ export class UserDTO {
     alias: string,
     imageUrl: string,
     password: string,
-    salt?: string | undefined
+    salt?: string | undefined,
+    followers: number = 0,
+    following: number = 0
   ) {
     this.firstName = firstName;
     this.lastName = lastName;
@@ -22,6 +26,8 @@ export class UserDTO {
     this.imageUrl = imageUrl;
     this.password = password;
     this.salt = salt || "";
+    this.followers = followers;
+    this.following = following;
   }
 
   public toString(): string {
