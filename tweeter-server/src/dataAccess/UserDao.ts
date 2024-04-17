@@ -51,7 +51,7 @@ export class UserDao implements IDao {
             output.Item[this.following]
           );
     } catch (error) {
-      throw new Error("[InternalServerError]" + error);
+      throw new Error("[InternalServerError] " + error);
     }
   }
 
@@ -69,7 +69,7 @@ export class UserDao implements IDao {
     try {
       await this.client.send(new DeleteCommand(params));
     } catch (error) {
-      throw new Error("[InternalServerError]" + error);
+      throw new Error("[InternalServerError] " + error);
     }
   }
 
@@ -100,7 +100,7 @@ export class UserDao implements IDao {
       };
       await this.client.send(new PutCommand(params));
     } catch (error) {
-      throw new Error("[InternalServerError]" + error);
+      throw new Error("[InternalServerError] " + error);
     }
   }
 
@@ -135,7 +135,7 @@ export class UserDao implements IDao {
     try {
       await this.client.send(new UpdateCommand(params));
     } catch (error) {
-      throw new Error("[InternalServerError]" + error);
+      throw new Error("[InternalServerError] " + error);
     }
   }
 

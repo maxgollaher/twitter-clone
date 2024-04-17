@@ -40,6 +40,32 @@ export class FollowService extends AuthService {
     return [validUsers, response.hasMorePages];
   }
 
+  public async loadMoreFollowerHandles(
+    user: User,
+    pageSize: number,
+    lastItem: string | undefined
+  ): Promise<[string[], boolean]> {
+
+    let response: DataPage<Follower> =
+      await FollowService.followsDao.getPageOfFollowers(
+        user.alias,
+        pageSize,
+        lastItem
+      );
+
+    let userPromises: Promise<string | null>[] = response.values.map(
+      async (follower) => {
+        let foundUser: string | null = follower.followee_handle;
+        return foundUser ? foundUser : null;
+      }
+    );
+
+    let users = await Promise.all(userPromises);
+    let validUsers = users.filter((user) => user !== null) as string[];
+
+    return [validUsers, response.hasMorePages];
+  }
+
   public async loadMoreFollowees(
     authToken: AuthToken,
     user: User,

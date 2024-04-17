@@ -192,7 +192,7 @@ export class StatusDao implements PaginatedFeedDao {
     try {
       await this.client.send(new BatchWriteCommand(params));
     } catch (error) {
-      throw new Error("[InternalServerError]" + error);
+      throw new Error("[InternalServerError] " + error);
     }
   
   }

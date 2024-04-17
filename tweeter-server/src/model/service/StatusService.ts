@@ -50,10 +50,10 @@ export class StatusService extends AuthService {
    */
   public async postStatus(
     newStatus: Status,
-    followers: User[]
+    followers: string[]
   ): Promise<void> {
     let items = followers.map((follower) => {
-      return new StatusDTO(follower.alias, newStatus.timestamp, newStatus);
+      return new StatusDTO(follower, newStatus.timestamp, newStatus);
     });
     await StatusService.feedDao.batchWriteItems(items);
   }
